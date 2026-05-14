@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Microservice Deep Dives</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    
+    <!-- Prism Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#dae2fd",
+                        "surface-tint": "#adc6ff",
+                        "emerald-accent": "#10b981",
+                        "on-tertiary-fixed": "#311400",
+                        "surface-bright": "#31394d",
+                        "on-primary-fixed": "#001a42",
+                        "on-secondary-fixed": "#002113",
+                        "on-tertiary-container": "#461f00",
+                        "pure-white": "#ffffff",
+                        "electric-blue": "#3b82f6",
+                        "on-surface": "#dae2fd",
+                        "on-primary-container": "#00285d",
+                        "secondary": "#4edea3",
+                        "inverse-on-surface": "#283044",
+                        "surface": "#0b1326",
+                        "on-primary": "#002e6a",
+                        "on-secondary-container": "#00311f",
+                        "outline": "#8c909f",
+                        "on-error-container": "#ffdad6",
+                        "outline-variant": "#424754",
+                        "error": "#ffb4ab",
+                        "primary": "#adc6ff",
+                        "surface-variant": "#2d3449",
+                        "surface-container-lowest": "#060e20",
+                        "secondary-container": "#00a572",
+                        "surface-container-highest": "#2d3449",
+                        "surface-container-high": "#222a3d",
+                        "on-primary-fixed-variant": "#004395",
+                        "on-secondary": "#003824",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed-variant": "#723600",
+                        "error-container": "#93000a",
+                        "surface-dim": "#0b1326",
+                        "on-surface-variant": "#c2c6d6",
+                        "tertiary": "#ffb786",
+                        "tertiary-fixed": "#ffdcc6",
+                        "slate-800": "#1e293b",
+                        "slate-700": "#334155",
+                        "primary-fixed": "#d8e2ff",
+                        "on-tertiary": "#502400",
+                        "surface-container": "#171f33",
+                        "inverse-surface": "#dae2fd",
+                        "background": "#0b1326",
+                        "slate-900": "#0f172a",
+                        "silver-text": "#cbd5e1",
+                        "tertiary-container": "#df7412",
+                        "secondary-fixed-dim": "#4edea3",
+                        "primary-container": "#4d8eff",
+                        "surface-container-low": "#131b2e",
+                        "primary-fixed-dim": "#adc6ff",
+                        "inverse-primary": "#005ac2",
+                        "on-secondary-fixed-variant": "#005236",
+                        "tertiary-fixed-dim": "#ffb786",
+                        "secondary-fixed": "#6ffbbe"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1140px",
+                        "section-gap": "80px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "mono-label": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "mono-code": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "base": "1rem",
+                        "display-lg": ["2.5rem", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "mono-label": ["1rem", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "body-md": ["1rem", {"lineHeight": "26px", "fontWeight": "400"}],
+                        "headline-lg": ["1.75rem", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["1.75rem", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "mono-code": ["1rem", {"lineHeight": "18px", "fontWeight": "400"}]
+                    },
+                    "keyframes": {
+                        "typewriter": {
+                            "from": { "width": "0" },
+                            "to": { "width": "100%" }
+                        },
+                        "blink": {
+                            "0%, 100%": { "border-color": "transparent" },
+                            "50%": { "border-color": "currentColor" }
+                        }
+                    },
+                    "animation": {
+                        "typewriter": "typewriter 2s steps(40) forwards",
+                        "caret": "blink 1s step-end infinite",
+                        "caret-once": "blink 1s step-end 2 forwards",
+                        "hero-load": "hero-load 10s ease-out forwards"
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body { background-color: #0b1326; color: #dae2fd; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .timeline-gradient { background: linear-gradient(180deg, #3b82f6 0%, transparent 100%); }
+        .glass-card { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .mouse-tracking-glow { position: relative; overflow: hidden; }
+        .mouse-tracking-glow::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(
+                300px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(173, 198, 255, 0.15) 0%,
+                transparent 70%
+            );
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .mouse-tracking-glow:hover::before { opacity: 1; }
+        .mouse-tracking-glow > * { position: relative; z-index: 1; }
+        .typewriter-line { display: inline-block; overflow: hidden; white-space: nowrap; border-right: 4px solid transparent; width: 0; }
+        @keyframes hero-load {
+            0% { opacity: 0; transform: scale(1.25); }
+            100% { opacity: 1.0; transform: scale(1); }
+        }
+        .hero-bg-animate {
+            animation: hero-load 5s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md overflow-x-hidden selection:bg-electric-blue selection:text-white">
+    <!-- TopNavBar -->
+    <header class="fixed top-0 w-full z-50 bg-surface/30 backdrop-blur-md border-b border-outline-variant/10">
+        <nav class="flex justify-between items-center px-6 md:px-gutter max-w-[1140px] mx-auto h-20">
+            <div class="font-display-lg text-headline-lg font-black text-primary dark:text-primary tracking-tighter">
+                <a href="index.html" class="flex items-center gap-2">
+                    
+                    <span class="material-symbols-outlined text-on-surface-variant hover:text-emerald-accent transition-colors">home</span>
+                    
+                </a>
+            </div>
+            <div class="hidden md:flex items-center gap-8 font-mono-label text-mono-label">
+                
+                <a class="font-mono-label text-mono-label text-emerald-accent font-bold border-b-2 border-emerald-accent pb-1" href="#">Projects</a>
+                
+            </div>
+        </nav>
+    </header>
+
+    
+<main class="pt-32 pb-20">
+    <div class="max-w-[1140px] mx-auto px-6 md:px-gutter">
+        <!-- Hero Header -->
+        <section class="mb-16 text-center md:text-left">
+            <div class="inline-block py-1 px-3 mb-6 bg-slate-800 border border-outline-variant/20 rounded-full font-mono-label text-mono-label text-emerald-accent">
+                Technical Analysis
+            </div>
+            <h1 class="font-display-lg text-display-lg text-white mb-6">Microservice Deep Dives</h1>
+            <p class="text-on-surface-variant text-xl max-w-3xl">
+                In this article, we will discuss the individual microservices in the GPU store.
+            </p>
+        </section>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-12">
+            <!-- Table of Contents / Sidebar -->
+            <aside class="md:col-span-3">
+                <div class="sticky top-28 p-6 glass-card rounded-xl">
+                    <h2 class="font-mono-label text-mono-label text-white uppercase tracking-widest mb-4">Table of Contents</h2>
+                    <nav class="flex flex-col gap-3 font-body-md text-on-surface-variant">
+                        <a href="#database" class="hover:text-emerald-accent transition-colors">Database</a>
+                        <a href="#matching-engine" class="hover:text-emerald-accent transition-colors">Matching Engine</a>
+                        <a href="#gateway" class="hover:text-emerald-accent transition-colors">Gateway</a>
+                        <a href="#market-data" class="hover:text-emerald-accent transition-colors">Market Data</a>
+                        <a href="#time-to-market" class="hover:text-emerald-accent transition-colors">Time to Market</a>
+                    </nav>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <article class="md:col-span-9 space-y-16">
+                <!-- Database -->
+                <section id="database" class="scroll-mt-32">
+                    <div class="flex items-center gap-4 mb-8">
+                        <h2 class="font-headline-lg text-headline-lg text-white">Database</h2>
+                        <div class="h-px flex-grow bg-outline-variant/30"></div>
+                    </div>
+                    <div class="p-8 glass-card rounded-xl space-y-6">
+                        <p class="text-on-surface-variant">
+                            For simplicity, our database is implemented as a simple log-append file. Every time a new trade occurs, we append to the end of the file. Here’s the relevant code:
+                        </p>
+
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10">
+<pre><code class="language-cpp">std::expected&lt;void, funx::transaction::proto::ErrorCode&gt;
+FileStorage::save(funx::transaction::Transaction const&amp; tx)
+{
+    FUNX_TRY_VOID(saveInMemory(tx));
+    uint16_t size = sizeof(tx);
+    ofs_.write(reinterpret_cast&lt;const char*&gt;(&amp;size), sizeof(size));
+    auto writeSizeFailed = ofs_.fail();
+    ofs_.write(reinterpret_cast&lt;const char*&gt;(&amp;tx), sizeof(tx));
+    auto writeTxFailed = ofs_.fail();
+    if (writeSizeFailed || writeTxFailed) {
+        LOG_WARN("Failed to write transaction. "
+                    "Manual intervention needed for {}", tx);
+        return std::unexpected(funx::transaction::proto::ErrorCode::FileWriteFailed);
+    }
+    ofs_.flush();
+    return {};
+}</code></pre>
+                        </div>
+
+                        <p class="text-on-surface-variant">
+                            For every trade, we store the size of the trade data followed by the trade’s binary data. Everything is done in binary to maximize efficiency. If we crash, on restart, we can read the entire file to bootstrap.
+                        </p>
+
+                        <div class="p-6 bg-slate-800/50 rounded-lg border-l-4 border-l-electric-blue space-y-4">
+                            <h4 class="font-mono-label text-white">Potential Extensions</h4>
+                            <p class="text-on-surface-variant">
+                                To ensure resilience against disk failure, the log can be segmented and backed up to S3.
+                            </p>
+                            <p class="text-on-surface-variant">
+                                Finally, everything is hidden behind an API, so we can swap this log-append file for an off-the-shelf database solution at any point.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Matching Engine -->
+                <section id="matching-engine" class="scroll-mt-32">
+                    <div class="flex items-center gap-4 mb-8">
+                        <h2 class="font-headline-lg text-headline-lg text-white">Matching Engine</h2>
+                        <div class="h-px flex-grow bg-outline-variant/30"></div>
+                    </div>
+                    <div class="p-8 glass-card rounded-xl space-y-6">
+                        <p class="text-on-surface-variant">
+                            The matching engine implements a standard price-time priority algorithm.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            We have an <code>Order</code> data structure containing info about each order:
+                        </p>
+
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10">
+<pre><code class="language-cpp">struct [[gnu::packed]] Order
+{
+    funx::Product product;
+    funx::Quantity qty;
+    funx::Price price;
+    funx::Side side;
+    funx::Duration duration;
+    funx::CompanyId company;
+    funx::OrderId order_id;
+
+    bool operator==(Order const&amp; other) const = default;
+};</code></pre>
+                        </div>
+
+                        <p class="text-on-surface-variant">
+                            Next, every price level is a linked list of orders:
+                        </p>
+
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10">
+<pre><code class="language-cpp">struct Level
+{
+    std::list&lt;Order&gt; orders;
+    using iterator = decltype(orders)::iterator;
+};</code></pre>
+                        </div>
+
+                        <p class="text-on-surface-variant">
+                            When orders trade, we pop from the front in <code>O(1)</code>. When orders get added, we push to the back in <code>O(1)</code>.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            When orders get cancelled, we keep a hashmap of order ID to the order’s iterator and remove from the list in <code>O(1)</code>.
+                        </p>
+
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10">
+<pre><code class="language-cpp">struct OrderData {
+    decltype(levels_)::iterator iter_to_level;
+    Level::iterator iter_to_order;
+};
+std::unordered_map&lt;funx::OrderId, OrderData&gt; order_map_;</code></pre>
+                        </div>
+
+                        <p class="text-on-surface-variant">
+                            Every book side is a tree of price levels for <code>log(N)</code> find, insert, and delete operations. And finally, each book has two book sides: buy and sell.
+                        </p>
+
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10">
+<pre><code class="language-cpp">class BookSide
+{
+private:
+    ...
+    std::map&lt;funx::Price, Level, Comparator&gt; levels_;
+};
+
+impl::BookSide&lt;funx::BuyComparator&gt; buys_;
+impl::BookSide&lt;funx::SellComparator&gt; sells_;</code></pre>
+                        </div>
+
+                        <div class="p-6 bg-slate-800/50 rounded-lg border-l-4 border-l-electric-blue space-y-4">
+                            <h4 class="font-mono-label text-white">Potential Extensions</h4>
+                            <p class="text-on-surface-variant">
+                                We keep things simple and don’t prematurely optimize. But if we’re willing to increase the complexity of the system, there’s lots of possible optimizations.
+                            </p>
+                            
+                            <h5 class="text-white font-bold mt-4">Memory Pools and Cache Locality</h5>
+                            <p class="text-on-surface-variant">
+                                When a new order comes in, we currently append to the level linked list, which does a heap allocation. Instead, we can preallocate a giant memory pool of orders.
+                            </p>
+                            <p class="text-on-surface-variant">
+                                You could further improve cache locality by preallocating memory pools for each price level to improve cache locality because orders within a price level tend to be accessed together.
+                            </p>
+
+                            <h5 class="text-white font-bold mt-4"><code>absl::flat_hash_map</code></h5>
+                            <p class="text-on-surface-variant">
+                                We use an <code>std::unordered_map</code> which implements separate chaining. It has bad cache locality so the performance is worse than open addressing solutions like abseil’s <code>flat_hash_map</code>.
+                            </p>
+
+                            <h5 class="text-white font-bold mt-4">The FPGA Misconception</h5>
+                            <p class="text-on-surface-variant">
+                                Finally, one misconception to address: moving to an FPGA because it’s “faster”. FPGA clock rates are hundreds of MHz. CPU clock rates are GHz. For a sequential FIFO matching engine algorithm, the FPGA is unlikely to make up the 10x slower clock rate with parallelism. People use FPGAs for a more-nuanced technical reason that I intentionally leave out here. FPGAs are probably not the best platform for your matching engine, but they can be useful in other parts of the infrastructure.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Gateway -->
+                <section id="gateway" class="scroll-mt-32">
+                    <div class="flex items-center gap-4 mb-8">
+                        <h2 class="font-headline-lg text-headline-lg text-white">Gateway</h2>
+                        <div class="h-px flex-grow bg-outline-variant/30"></div>
+                    </div>
+                    <div class="p-8 glass-card rounded-xl space-y-6">
+                        <p class="text-on-surface-variant">
+                            Our next microservice is the gateway.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            The gateway is simply a translation layer between the user and the matching engine. A single gateway consists of <code>N</code> sessions where each session acts as a TCP server that accepts one client:
+                        </p>
+
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10">
+<pre><code class="language-cpp">class Gateway
+{
+    ...
+private:
+    std::vector&lt;Session&gt; sessions_;
+};</code></pre>
+                        </div>
+
+                        <p class="text-on-surface-variant">
+                            Within each session, it’s just tedious state management for that client:
+                        </p>
+
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10">
+<pre><code class="language-cpp">class Session
+{
+public:
+    // No TCP connection established
+    struct NotConnected {};
+
+    // TCP connection established, but not logged in yet
+    struct Connected {
+        funx::TcpSession session;
+    };
+
+    // Logged in and trading is permitted
+    struct Active {
+        funx::TcpSession session;
+        funx::Clock::time_point last_msg_time;
+    };
+
+    using State = std::variant&lt;
+        NotConnected,
+        Connected,
+        Active
+    &gt;;
+    ...
+};</code></pre>
+                        </div>
+
+                        <p class="text-on-surface-variant">
+                            Every time the client sends us a FLOP request, we have to translate the request to something the matching engine understands. And every time the matching engine updates us about an order, we have to send the corresponding FLOP message(s) to the client. I’ll have a later C++ deep dive to illustrate techniques we use to keep the code maintainable.
+                        </p>
+
+                        <div class="p-6 bg-slate-800/50 rounded-lg border-l-4 border-l-electric-blue space-y-4">
+                            <h4 class="font-mono-label text-white">Potential Extensions</h4>
+                            <p class="text-on-surface-variant">
+                                The notable missing feature is recovery: both if the client crashes or if the gateway crashes. It’s a tedious feature to code, but a quick-and-dirty implementation would be an append-only log like we have with the database microservice.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Market Data -->
+                <section id="market-data" class="scroll-mt-32">
+                    <div class="flex items-center gap-4 mb-8">
+                        <h2 class="font-headline-lg text-headline-lg text-white">Market Data</h2>
+                        <div class="h-px flex-grow bg-outline-variant/30"></div>
+                    </div>
+                    <div class="p-8 glass-card rounded-xl space-y-6">
+                        <p class="text-on-surface-variant">
+                            Our final microservice is the market data service, which is another translation layer between matching engine and user.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            A market data server provides 2 UDP multicast channels: incremental and snapshot.
+                        </p>
+
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10">
+<pre><code class="language-cpp">class MarketDataService
+{
+    ...
+private:
+    funx::UdpSocket incremental_socket_;
+    funx::UdpSocket snapshot_socket_;
+};</code></pre>
+                        </div>
+
+                        <p class="text-on-surface-variant">
+                            We use UDP multicast to disseminate identical data to many consumers. This is significantly more efficient than a TCP session for every client.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            To help with clients losing packets, we run redundant market data services broadcasting the same data on multiple multicast channels. The client arbitrates <code>N</code> of these channels.
+                        </p>
+
+                        <div class="p-6 bg-slate-800/50 rounded-lg border-l-4 border-l-emerald-accent space-y-4">
+                            <h4 class="font-mono-label text-white">Potential Extensions</h4>
+                            <p class="text-on-surface-variant">
+                                If we had to, we could create a TCP service for clients to request specific sequence numbers.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Time to Market -->
+                <section id="time-to-market" class="scroll-mt-32">
+                    <div class="flex items-center gap-4 mb-8">
+                        <h2 class="font-headline-lg text-headline-lg text-white">Time to Market</h2>
+                        <div class="h-px flex-grow bg-outline-variant/30"></div>
+                    </div>
+                    <div class="p-8 glass-card rounded-xl space-y-6">
+                        <p class="text-on-surface-variant">
+                            The design prioritizes simplicity to minimize time-to-market.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            I left out a lot of important, advanced features, but was able to build the MVP in 1.5 months, coding 12 or so hours each Saturday and Sunday.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            In a work environment with meetings and other responsibilities, I estimate this would’ve taken about a month.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Navigation Footer -->
+                <div class="pt-8 border-t border-outline-variant/20 flex justify-start">
+                    <a href="gpu-store.html" class="inline-flex items-center gap-2 text-electric-blue hover:text-emerald-accent transition-colors font-mono-label">
+                        <span class="material-symbols-outlined">arrow_back</span>
+                        Back to GPU Store Project
+                    </a>
+                </div>
+            </article>
+        </div>
+    </div>
+</main>
+
+
+    <!-- Footer -->
+    <footer class="w-full py-12 bg-surface-container-lowest border-t border-outline-variant/10">
+        <div class="max-w-[1140px] mx-auto px-6 md:px-gutter flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="font-mono-code text-mono-code text-primary">
+                MY RESUME
+            </div>
+            <div class="font-mono-label text-mono-label text-on-surface-variant flex gap-8">
+                <a class="hover:text-secondary transition-colors" href="https://github.com/portfolio4">GitHub</a>
+            </div>
+            <div class="font-mono-label text-mono-label text-on-surface-variant text-center md:text-right">
+                © 2026
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Atmospheric Elements -->
+    <script>
+        // Simple scroll reveal for cards
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.style.opacity = "0";
+            card.style.transform = "translateY(20px)";
+            card.style.transition = "all 0.6s cubic-bezier(0.22, 1, 0.36, 1)";
+            observer.observe(card);
+        });
+
+        // Mouse tracking for glow effect
+        document.querySelectorAll('.mouse-tracking-glow').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
+</body>
+</html>

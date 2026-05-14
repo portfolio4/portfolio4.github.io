@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>MY RESUME</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    
+    <!-- Prism Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#dae2fd",
+                        "surface-tint": "#adc6ff",
+                        "emerald-accent": "#10b981",
+                        "on-tertiary-fixed": "#311400",
+                        "surface-bright": "#31394d",
+                        "on-primary-fixed": "#001a42",
+                        "on-secondary-fixed": "#002113",
+                        "on-tertiary-container": "#461f00",
+                        "pure-white": "#ffffff",
+                        "electric-blue": "#3b82f6",
+                        "on-surface": "#dae2fd",
+                        "on-primary-container": "#00285d",
+                        "secondary": "#4edea3",
+                        "inverse-on-surface": "#283044",
+                        "surface": "#0b1326",
+                        "on-primary": "#002e6a",
+                        "on-secondary-container": "#00311f",
+                        "outline": "#8c909f",
+                        "on-error-container": "#ffdad6",
+                        "outline-variant": "#424754",
+                        "error": "#ffb4ab",
+                        "primary": "#adc6ff",
+                        "surface-variant": "#2d3449",
+                        "surface-container-lowest": "#060e20",
+                        "secondary-container": "#00a572",
+                        "surface-container-highest": "#2d3449",
+                        "surface-container-high": "#222a3d",
+                        "on-primary-fixed-variant": "#004395",
+                        "on-secondary": "#003824",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed-variant": "#723600",
+                        "error-container": "#93000a",
+                        "surface-dim": "#0b1326",
+                        "on-surface-variant": "#c2c6d6",
+                        "tertiary": "#ffb786",
+                        "tertiary-fixed": "#ffdcc6",
+                        "slate-800": "#1e293b",
+                        "slate-700": "#334155",
+                        "primary-fixed": "#d8e2ff",
+                        "on-tertiary": "#502400",
+                        "surface-container": "#171f33",
+                        "inverse-surface": "#dae2fd",
+                        "background": "#0b1326",
+                        "slate-900": "#0f172a",
+                        "silver-text": "#cbd5e1",
+                        "tertiary-container": "#df7412",
+                        "secondary-fixed-dim": "#4edea3",
+                        "primary-container": "#4d8eff",
+                        "surface-container-low": "#131b2e",
+                        "primary-fixed-dim": "#adc6ff",
+                        "inverse-primary": "#005ac2",
+                        "on-secondary-fixed-variant": "#005236",
+                        "tertiary-fixed-dim": "#ffb786",
+                        "secondary-fixed": "#6ffbbe"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1140px",
+                        "section-gap": "80px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "mono-label": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "mono-code": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "base": "1rem",
+                        "display-lg": ["2.5rem", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "mono-label": ["1rem", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "body-md": ["1rem", {"lineHeight": "26px", "fontWeight": "400"}],
+                        "headline-lg": ["1.75rem", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["1.75rem", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "mono-code": ["1rem", {"lineHeight": "18px", "fontWeight": "400"}]
+                    },
+                    "keyframes": {
+                        "typewriter": {
+                            "from": { "width": "0" },
+                            "to": { "width": "100%" }
+                        },
+                        "blink": {
+                            "0%, 100%": { "border-color": "transparent" },
+                            "50%": { "border-color": "currentColor" }
+                        }
+                    },
+                    "animation": {
+                        "typewriter": "typewriter 2s steps(40) forwards",
+                        "caret": "blink 1s step-end infinite",
+                        "caret-once": "blink 1s step-end 2 forwards",
+                        "hero-load": "hero-load 10s ease-out forwards"
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body { background-color: #0b1326; color: #dae2fd; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .timeline-gradient { background: linear-gradient(180deg, #3b82f6 0%, transparent 100%); }
+        .glass-card { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .mouse-tracking-glow { position: relative; overflow: hidden; }
+        .mouse-tracking-glow::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(
+                300px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(173, 198, 255, 0.15) 0%,
+                transparent 70%
+            );
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .mouse-tracking-glow:hover::before { opacity: 1; }
+        .mouse-tracking-glow > * { position: relative; z-index: 1; }
+        .typewriter-line { display: inline-block; overflow: hidden; white-space: nowrap; border-right: 4px solid transparent; width: 0; }
+        @keyframes hero-load {
+            0% { opacity: 0; transform: scale(1.25); }
+            100% { opacity: 1.0; transform: scale(1); }
+        }
+        .hero-bg-animate {
+            animation: hero-load 5s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md overflow-x-hidden selection:bg-electric-blue selection:text-white">
+    <!-- TopNavBar -->
+    <header class="fixed top-0 w-full z-50 bg-surface/30 backdrop-blur-md border-b border-outline-variant/10">
+        <nav class="flex justify-between items-center px-6 md:px-gutter max-w-[1140px] mx-auto h-20">
+            <div class="font-display-lg text-headline-lg font-black text-primary dark:text-primary tracking-tighter">
+                <a href="index.html" class="flex items-center gap-2">
+                    
+                    MY RESUME
+                    
+                </a>
+            </div>
+            <div class="hidden md:flex items-center gap-8 font-mono-label text-mono-label">
+                
+            </div>
+        </nav>
+    </header>
+
+    
+<main class="pb-20">
+<!-- Hero / Header Section -->
+<section class="relative min-h-[70vh] flex flex-col justify-center mb-4 overflow-hidden">
+    <!-- Background Image with Animation -->
+    <div class="absolute inset-0 z-0">
+        <img src="assets/hero.png" alt="" class="w-full h-full object-cover hero-bg-animate" />
+        <div class="absolute inset-0 bg-surface/50"></div>
+    </div>
+
+    <div class="relative z-10 max-w-[1140px] mx-auto px-6 md:px-gutter w-full flex flex-col items-center md:items-start text-center md:text-left">
+<div class="inline-block py-1 px-3 mb-6 bg-slate-800 border border-outline-variant/20 rounded-full font-mono-label text-mono-label text-emerald-accent">
+                Rigorous Process, Robust Software
+            </div>
+<p class="text-silver-text text-xl sm:text-3xl md:text-5xl font-mono-code leading-relaxed">
+    <span class="typewriter-line animate-typewriter animate-caret-once pb-1">Uncompromising engineering</span><br>
+    <span class="typewriter-line animate-typewriter animate-caret [animation-delay:2.0s] [animation-fill-mode:forwards]">for distributed systems</span>
+</p>
+</div>
+</section>
+<!-- About / Timeline Section -->
+<section class="max-w-[1140px] mx-auto px-6 md:px-gutter mb-section-gap" id="about">
+<div class="flex items-center gap-4 mb-12">
+<h2 class="font-headline-lg text-headline-lg text-white">About</h2>
+<div class="h-px flex-grow bg-outline-variant/30"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-12">
+<div class="md:col-span-4 relative">
+<div class="sticky top-28">
+<div class="mouse-tracking-glow p-8 glass-card rounded-xl border-l-4 border-l-electric-blue">
+
+<span class="font-mono-code text-mono-code text-electric-blue block mb-2 uppercase tracking-widest">Core Philosophy</span>
+
+<p class="font-body-md text-body-md text-on-surface">
+    Product quality is a direct reflection of engineering process.
+</p>
+
+</div>
+</div>
+</div>
+<div class="md:col-span-8 relative">
+<!-- Vertical Timeline Line -->
+<div class="absolute left-0 top-0 bottom-0 w-0.5 bg-slate-800 ml-[11px]"></div>
+
+<!-- Milestone 1 -->
+<div class="relative pl-12 group">
+<div class="absolute left-0 top-10 w-6 h-6 bg-surface border-4 border-electric-blue rounded-full z-10"></div>
+<div class="mouse-tracking-glow p-8 glass-card rounded-xl">
+
+<h3 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-white mb-4">20+ Years of Programming</h3>
+
+<div class="inline-block py-1 px-3 mb-6 bg-slate-800 border border-outline-variant/20 rounded-full font-mono-label text-mono-label text-emerald-accent">
+    Passion for Coding
+</div>
+
+<p class="text-on-surface-variant">
+    I've built many fun projects from a young age: computer games,
+    animatronic hand, physics engine, 3D graphing calculator, online whiteboard,
+    stock exchange, plagiarism detector, and more.
+</p>
+
+</div>
+</div>
+
+<div class="relative pl-12 group mt-12">
+<div class="absolute left-0 top-10 w-6 h-6 bg-surface border-4 border-electric-blue rounded-full z-10"></div>
+<div class="mouse-tracking-glow p-8 glass-card rounded-xl">
+<h3 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-white mb-4">10+ Years Optimizing Latency / Throughput</h3>
+
+<div class="inline-block py-1 px-3 mb-6 bg-slate-800 border border-outline-variant/20 rounded-full font-mono-label text-mono-label text-emerald-accent">
+    Elite System Performance
+</div>
+
+
+<p class="text-on-surface-variant">
+    I have over 10 years of experience working from the highest-level abstractions
+    down to tinkering at the binary level in the OS, hardware, and networks.
+    I've worked across high-throughput data ingestion,
+    low-latency data-center-aware networking,
+    high-fidelity model backtesting platforms,
+    and real-time decision-making software.
+</p>
+
+</div>
+</div>
+
+
+<div class="relative pl-12 group mt-12">
+<div class="absolute left-0 top-10 w-6 h-6 bg-surface border-4 border-electric-blue rounded-full z-10"></div>
+<div class="mouse-tracking-glow p-8 glass-card rounded-xl">
+
+<h3 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-white mb-4">Software Engineering Excellence</h3>
+
+<div class="inline-block py-1 px-3 mb-6 bg-slate-800 border border-outline-variant/20 rounded-full font-mono-label text-mono-label text-emerald-accent">
+    Process &gt;&gt; Code
+</div>
+
+<p class="text-on-surface-variant">
+    I've read all the textbooks and applied the techniques to real projects.
+    The right process truly builds the right system to last.
+    Build the right team.
+    Supercharge efficiency with detailed requirements and design.
+    Balance quality versus time-to-market.
+    Maintain detailed timelines for customer visibility and trust.
+    Code with testing in mind.
+    Focus on the entire software lifecycle.
+</p>
+</div>
+</div>
+
+<div class="relative pl-12 group mt-12">
+<div class="absolute left-0 top-10 w-6 h-6 bg-surface border-4 border-electric-blue rounded-full z-10"></div>
+<div class="mouse-tracking-glow p-8 glass-card rounded-xl">
+
+<h3 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-white mb-4">Cultural Awareness</h3>
+
+<div class="inline-block py-1 px-3 mb-6 bg-slate-800 border border-outline-variant/20 rounded-full font-mono-label text-mono-label text-emerald-accent">
+    Promote an Enjoyable Community
+</div>
+
+<p class="text-on-surface-variant">
+    Software engineering is a team sport.
+    I take great care to reconcile disagreements, mentor junior engineers,
+    plan activities, and improve team cohesiveness.
+    Nobody should ever feel left out.
+    My goal is to nuture communities where people look forward to
+    collaborating and winning.
+</p>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</section>
+<!-- Skills Section -->
+<section class="max-w-[1140px] mx-auto px-6 md:px-gutter mb-section-gap" id="skills">
+<div class="flex items-center gap-4 mb-12">
+<h2 class="font-headline-lg text-headline-lg text-white">Skills</h2>
+<div class="h-px flex-grow bg-outline-variant/30"></div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-5 gap-6">
+
+<div class="mouse-tracking-glow p-6 glass-card rounded-lg group hover:bg-slate-800 transition-all cursor-pointer text-center" onclick="toggleSkill('cpp')">
+<div class="w-12 h-12 bg-electric-blue/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-electric-blue" data-icon="code">code</span>
+</div>
+<span class="font-mono-label text-mono-label text-white uppercase tracking-wider">C++</span>
+<div class="mt-4 flex justify-center gap-1">
+<div class="w-2 h-2 rounded-full bg-emerald-accent"></div>
+<div class="w-2 h-2 rounded-full bg-emerald-accent"></div>
+<div class="w-2 h-2 rounded-full bg-emerald-accent"></div>
+<div class="w-2 h-2 rounded-full bg-emerald-accent"></div>
+<div class="w-2 h-2 rounded-full bg-emerald-accent"></div>
+</div>
+</div>
+
+<div class="mouse-tracking-glow p-6 glass-card rounded-lg group hover:bg-slate-800 transition-all cursor-pointer text-center" onclick="toggleSkill('python')">
+<div class="w-12 h-12 bg-electric-blue/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-electric-blue" data-icon="code">code</span>
+</div>
+<span class="font-mono-label text-mono-label text-white uppercase tracking-wider">Python</span>
+<div class="mt-4 flex justify-center gap-1">
+<div class="w-2 h-2 rounded-full bg-emerald-accent"></div>
+<div class="w-2 h-2 rounded-full bg-emerald-accent"></div>
+<div class="w-2 h-2 rounded-full bg-emerald-accent"></div>
+<div class="w-2 h-2 rounded-full bg-emerald-accent"></div>
+<div class="w-2 h-2 rounded-full bg-slate-700"></div>
+</div>
+</div>
+
+<div class="mouse-tracking-glow p-6 glass-card rounded-lg group hover:bg-slate-800 transition-all cursor-pointer text-center" onclick="toggleSkill('go')">
+<div class="w-12 h-12 bg-electric-blue/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-electric-blue" data-icon="code">code</span>
+</div>
+<span class="font-mono-label text-mono-label text-white uppercase tracking-wider">Go</span>
+<div class="mt-4 flex justify-center gap-1">
+<div class="w-2 h-2 rounded-full bg-emerald-accent"></div>
+<div class="w-2 h-2 rounded-full bg-emerald-accent"></div>
+<div class="w-2 h-2 rounded-full bg-emerald-accent"></div>
+<div class="w-2 h-2 rounded-full bg-slate-700"></div>
+<div class="w-2 h-2 rounded-full bg-slate-700"></div>
+</div>
+</div>
+
+<div class="mouse-tracking-glow p-6 glass-card rounded-lg group hover:bg-slate-800 transition-all cursor-pointer text-center" onclick="toggleSkill('linux')">
+<div class="w-12 h-12 bg-electric-blue/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-electric-blue" data-icon="terminal">terminal</span>
+</div>
+<span class="font-mono-label text-mono-label text-white uppercase tracking-wider">Linux</span>
+<div class="mt-4 flex justify-center gap-1">
+<div class="w-2 h-2 rounded-full bg-emerald-accent"></div>
+<div class="w-2 h-2 rounded-full bg-emerald-accent"></div>
+<div class="w-2 h-2 rounded-full bg-emerald-accent"></div>
+<div class="w-2 h-2 rounded-full bg-emerald-accent"></div>
+<div class="w-2 h-2 rounded-full bg-slate-700"></div>
+</div>
+</div>
+
+
+<div class="mouse-tracking-glow p-6 glass-card rounded-lg group hover:bg-slate-800 transition-all cursor-pointer text-center" onclick="toggleSkill('ai')">
+<div class="w-12 h-12 bg-electric-blue/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-electric-blue" data-icon="psychology">psychology</span>
+</div>
+<span class="font-mono-label text-mono-label text-white uppercase tracking-wider">AI</span>
+<div class="mt-4 flex justify-center gap-1">
+<div class="w-2 h-2 rounded-full bg-emerald-accent"></div>
+<div class="w-2 h-2 rounded-full bg-emerald-accent"></div>
+<div class="w-2 h-2 rounded-full bg-emerald-accent"></div>
+<div class="w-2 h-2 rounded-full bg-emerald-accent"></div>
+<div class="w-2 h-2 rounded-full bg-slate-700"></div>
+</div>
+</div>
+
+</div>
+
+<!-- Expandable Skill Details -->
+<div id="skill-details" class="mt-8 hidden">
+    <div class="p-8 glass-card rounded-xl border-l-4 border-l-emerald-accent relative">
+        <button onclick="closeSkill()" class="absolute top-4 right-4 text-on-surface-variant hover:text-white transition-colors">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+        <div id="skill-content" class="text-on-surface">
+            <!-- Dynamic Content -->
+        </div>
+    </div>
+</div>
+
+<script>
+    const skillData = {
+        cpp: `
+            <p class="text-on-surface-variant mb-4">Deep expertise in modern C++ for robust, low-latency systems.</p>
+
+            <p class="text-on-surface-variant mb-4">
+                Things I use frequently:
+            </p>
+
+            <ul class="list-disc list-inside text-on-surface-variant mb-4">
+                <li>std::format</li>
+                <li>std::string_view and std::span</li>
+                <li>std::optional</li>
+                <li>std::expected</li>
+                <li>std::move</li>
+                <li>Strong typing</li>
+                <li>Lambdas, especially IILE for code cleanliness</li>
+                <li>std::visit and std::variant, often for state management</li>
+            </ul>
+
+            <p class="text-on-surface-variant mb-4">
+            I have not used a raw new operator in many years and rarely
+            need smart pointers. By design, I try not to allocate heap
+            memory myself; the heap allocations are primarily from libraries
+            like the STL.
+            </p>
+
+            <p class="text-on-surface-variant mb-4">
+            I can comfortably work with these, but they are not my go-tos
+            due to increased complexity for the reader:
+            </p>
+
+            <ul class="list-disc list-inside text-on-surface-variant">
+                <li>Concepts</li>
+                <li>Ranges</li>
+                <li>Template metaprogramming</li>
+            </ul>
+        `,
+        python: `
+            <p class="text-on-surface-variant mb-4">
+            My common use cases for Python:
+            </p>
+
+            <ul class="list-disc list-inside text-on-surface-variant mb-4">
+                <li>End-to-end testing</li>
+                <li>Scripting, monitoring, and other SRE tasks</li>
+                <li>Webservers</li>
+                <li>Prototyping</li>
+            </ul>
+
+            <p class="text-on-surface-variant mb-4">
+            Popular libraries I've worked with:
+            </p>
+
+            <ul class="list-disc list-inside text-on-surface-variant">
+                <li>Behave Framework (Testing)</li>
+                <li>Pybind C++ bindings</li>
+                <li>Fastapi</li>
+                <li>Flask</li>
+            </ul>
+        `,
+        go: `
+            <p class="text-on-surface-variant mb-4">
+                I use Go to build strongly-decoupled microservices that don't
+                require C++'s fine grain control over everything low-level.
+                It's a solid, general-purpose language that promotes simplicity
+                and readability.
+            </p>
+            <p class="text-on-surface-variant">
+                A lot of my C++ coincidentally ends up structured like Go,
+                and in a deep dive, I'll emphasize the important point of
+                "code for the reader and not the writer."
+            </p>
+        `,
+        linux: `
+            <p class="text-on-surface-variant mb-4">
+            My development work happens on Linux. I'm also fine working with
+            macOS since it's Unix based.
+            <p>
+
+            <p class="text-on-surface-variant">
+            My setup is simple: tmux and vim with no plugins.
+            git grep finds everything and AI also helps now.
+            </p>
+
+        `,
+        ai: `
+            <p class="text-on-surface-variant mb-4">
+            I used to write all my code by hand, but my process is now fully
+            prompting the AI to write short snippets of code (~100 lines max),
+            pointing out problems with correctness and clarity in the git diff,
+            and repeating the process until it matches what I think I would’ve
+            written from scratch myself. It’s definitely faster than before
+            because I don’t waste time figuring out compiler errors and silly bugs,
+            but it still requires significant expertise and thinking.
+            I also use AI to review code. Finally, whenever there is a bug in
+            production or testing, I immediately have the AI investigate in
+            parallel while I look as well.
+            </p>
+
+            <p class="text-on-surface-variant mb-4">
+            In terms of limitations, AI can only be as good as its existing codebase.
+            If engineers allow low-quality code into the codebase,
+            the AI will pattern-match against that low-quality code.
+            The future code it generates will be similarly bad.
+            This is the biggest risk with “slop” and why you should hire
+            engineers with deep experience and attention to code quality.
+            </p>
+
+            <p class="text-on-surface-variant mb-4">
+            AI is also poor at system design. Humans have enough trouble with it,
+            so it is unlikely people were able to produce good enough system design
+            training data for AI beyond cookie-cutter interview problems.
+            </p>
+
+            <p class="text-on-surface-variant">
+            In terms of models, as of writing, Codex is my preferred AI due to
+            its conciseness. I am no longer a fan of Claude Code, which
+            overcomments and overcomplicates things. Overall, I
+            closely-supervise Codex to churn out code faster, with fewer bugs,
+            and no worse clarity than if I had hand-written the code myself.
+            </p>
+        `
+    };
+
+    let activeSkill = null;
+
+    function toggleSkill(skillId) {
+        const detailsContainer = document.getElementById('skill-details');
+        const contentArea = document.getElementById('skill-content');
+
+        if (activeSkill === skillId) {
+            closeSkill();
+            return;
+        }
+
+        contentArea.innerHTML = skillData[skillId];
+        detailsContainer.classList.remove('hidden');
+        activeSkill = skillId;
+        
+        // Smooth scroll to the details
+        detailsContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function closeSkill() {
+        document.getElementById('skill-details').classList.add('hidden');
+        activeSkill = null;
+    }
+</script>
+</section>
+<!-- Projects Section -->
+<section class="max-w-[1140px] mx-auto px-6 md:px-gutter mb-section-gap" id="projects">
+<div class="flex items-center gap-4 mb-12">
+<h2 class="font-headline-lg text-headline-lg text-white">Projects</h2>
+<div class="h-px flex-grow bg-outline-variant/30"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+<div class="mouse-tracking-glow relative group overflow-hidden rounded-xl bg-slate-800 border border-outline-variant/10 hover:border-electric-blue/60 transition-all duration-300" style="transition-delay: 0.2s">
+    <div class="aspect-video w-full overflow-hidden">
+        <img alt="GPU Store" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-60" src="assets/gpu-store.png"/>
+        <a href="gpu-store.html" class="after:absolute after:inset-0"></a>
+    </div>
+
+    <div class="p-8 flex flex-col h-full relative z-10">
+    <div class="flex justify-between items-start mb-4">
+        <h3 class="font-headline-lg text-headline-lg text-white">GPU Store</h3>
+        <span class="font-mono-code text-mono-code text-electric-blue bg-electric-blue/10 px-3 py-1 rounded">C++</span>
+    </div>
+    <p class="text-silver-text mb-8 flex-grow">
+        A high-performance marketplace designed to facilitate the real-time buying
+        and selling of GPU compute time.
+    </p>
+    <a href="gpu-store.html" class="after:absolute after:inset-0"></a>
+</div>
+</div>
+
+<div class="mouse-tracking-glow relative group overflow-hidden rounded-xl bg-slate-800 border border-outline-variant/10 hover:border-electric-blue/60 transition-all duration-300" style="transition-delay: 0.2s">
+    <div class="aspect-video w-full overflow-hidden">
+        <img alt="AI Food Kiosk" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-60" src="assets/ai-kiosk.png"/>
+        <a href="ai-kiosk.html" class="after:absolute after:inset-0"></a>
+    </div>
+
+    <div class="p-8 flex flex-col h-full relative z-10">
+    <div class="flex justify-between items-start mb-4">
+        <h3 class="font-headline-lg text-headline-lg text-white">AI Food Kiosk</h3>
+        <div class="flex gap-2">
+            <span class="font-mono-code text-mono-code text-electric-blue bg-electric-blue/10 px-3 py-1 rounded">Rust</span>
+            <span class="font-mono-code text-mono-code text-electric-blue bg-electric-blue/10 px-3 py-1 rounded">AI</span>
+        </div>
+    </div>
+    <p class="text-silver-text mb-8 flex-grow">
+        An automated food kiosk where you speak with an AI agent to place your orders.
+    </p>
+    <a href="ai-kiosk.html" class="after:absolute after:inset-0"></a>
+</div>
+</div>
+
+<div class="glass-card rounded-xl p-8 flex flex-col justify-center items-center text-center border-dashed border-2 border-outline-variant/20">
+<h3 class="font-headline-lg text-headline-lg text-slate-700 mb-2">More Projects Coming Soon</h3>
+<span class="material-symbols-outlined text-slate-700 text-5xl mb-4" data-icon="more_horiz">more_horiz</span>
+</div>
+</div>
+
+</section>
+</main>
+
+
+    <!-- Footer -->
+    <footer class="w-full py-12 bg-surface-container-lowest border-t border-outline-variant/10">
+        <div class="max-w-[1140px] mx-auto px-6 md:px-gutter flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="font-mono-code text-mono-code text-primary">
+                MY RESUME
+            </div>
+            <div class="font-mono-label text-mono-label text-on-surface-variant flex gap-8">
+                <a class="hover:text-secondary transition-colors" href="https://github.com/portfolio4">GitHub</a>
+            </div>
+            <div class="font-mono-label text-mono-label text-on-surface-variant text-center md:text-right">
+                © 2026
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Atmospheric Elements -->
+    <script>
+        // Simple scroll reveal for cards
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.style.opacity = "0";
+            card.style.transform = "translateY(20px)";
+            card.style.transition = "all 0.6s cubic-bezier(0.22, 1, 0.36, 1)";
+            observer.observe(card);
+        });
+
+        // Mouse tracking for glow effect
+        document.querySelectorAll('.mouse-tracking-glow').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
+</body>
+</html>

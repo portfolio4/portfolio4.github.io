@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>C++ Best Practices</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    
+    <!-- Prism Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#dae2fd",
+                        "surface-tint": "#adc6ff",
+                        "emerald-accent": "#10b981",
+                        "on-tertiary-fixed": "#311400",
+                        "surface-bright": "#31394d",
+                        "on-primary-fixed": "#001a42",
+                        "on-secondary-fixed": "#002113",
+                        "on-tertiary-container": "#461f00",
+                        "pure-white": "#ffffff",
+                        "electric-blue": "#3b82f6",
+                        "on-surface": "#dae2fd",
+                        "on-primary-container": "#00285d",
+                        "secondary": "#4edea3",
+                        "inverse-on-surface": "#283044",
+                        "surface": "#0b1326",
+                        "on-primary": "#002e6a",
+                        "on-secondary-container": "#00311f",
+                        "outline": "#8c909f",
+                        "on-error-container": "#ffdad6",
+                        "outline-variant": "#424754",
+                        "error": "#ffb4ab",
+                        "primary": "#adc6ff",
+                        "surface-variant": "#2d3449",
+                        "surface-container-lowest": "#060e20",
+                        "secondary-container": "#00a572",
+                        "surface-container-highest": "#2d3449",
+                        "surface-container-high": "#222a3d",
+                        "on-primary-fixed-variant": "#004395",
+                        "on-secondary": "#003824",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed-variant": "#723600",
+                        "error-container": "#93000a",
+                        "surface-dim": "#0b1326",
+                        "on-surface-variant": "#c2c6d6",
+                        "tertiary": "#ffb786",
+                        "tertiary-fixed": "#ffdcc6",
+                        "slate-800": "#1e293b",
+                        "slate-700": "#334155",
+                        "primary-fixed": "#d8e2ff",
+                        "on-tertiary": "#502400",
+                        "surface-container": "#171f33",
+                        "inverse-surface": "#dae2fd",
+                        "background": "#0b1326",
+                        "slate-900": "#0f172a",
+                        "silver-text": "#cbd5e1",
+                        "tertiary-container": "#df7412",
+                        "secondary-fixed-dim": "#4edea3",
+                        "primary-container": "#4d8eff",
+                        "surface-container-low": "#131b2e",
+                        "primary-fixed-dim": "#adc6ff",
+                        "inverse-primary": "#005ac2",
+                        "on-secondary-fixed-variant": "#005236",
+                        "tertiary-fixed-dim": "#ffb786",
+                        "secondary-fixed": "#6ffbbe"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1140px",
+                        "section-gap": "80px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "mono-label": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "mono-code": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "base": "1rem",
+                        "display-lg": ["2.5rem", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "mono-label": ["1rem", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "body-md": ["1rem", {"lineHeight": "26px", "fontWeight": "400"}],
+                        "headline-lg": ["1.75rem", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["1.75rem", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "mono-code": ["1rem", {"lineHeight": "18px", "fontWeight": "400"}]
+                    },
+                    "keyframes": {
+                        "typewriter": {
+                            "from": { "width": "0" },
+                            "to": { "width": "100%" }
+                        },
+                        "blink": {
+                            "0%, 100%": { "border-color": "transparent" },
+                            "50%": { "border-color": "currentColor" }
+                        }
+                    },
+                    "animation": {
+                        "typewriter": "typewriter 2s steps(40) forwards",
+                        "caret": "blink 1s step-end infinite",
+                        "caret-once": "blink 1s step-end 2 forwards",
+                        "hero-load": "hero-load 10s ease-out forwards"
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body { background-color: #0b1326; color: #dae2fd; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .timeline-gradient { background: linear-gradient(180deg, #3b82f6 0%, transparent 100%); }
+        .glass-card { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .mouse-tracking-glow { position: relative; overflow: hidden; }
+        .mouse-tracking-glow::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(
+                300px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(173, 198, 255, 0.15) 0%,
+                transparent 70%
+            );
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .mouse-tracking-glow:hover::before { opacity: 1; }
+        .mouse-tracking-glow > * { position: relative; z-index: 1; }
+        .typewriter-line { display: inline-block; overflow: hidden; white-space: nowrap; border-right: 4px solid transparent; width: 0; }
+        @keyframes hero-load {
+            0% { opacity: 0; transform: scale(1.25); }
+            100% { opacity: 1.0; transform: scale(1); }
+        }
+        .hero-bg-animate {
+            animation: hero-load 5s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md overflow-x-hidden selection:bg-electric-blue selection:text-white">
+    <!-- TopNavBar -->
+    <header class="fixed top-0 w-full z-50 bg-surface/30 backdrop-blur-md border-b border-outline-variant/10">
+        <nav class="flex justify-between items-center px-6 md:px-gutter max-w-[1140px] mx-auto h-20">
+            <div class="font-display-lg text-headline-lg font-black text-primary dark:text-primary tracking-tighter">
+                <a href="index.html" class="flex items-center gap-2">
+                    
+                    <span class="material-symbols-outlined text-on-surface-variant hover:text-emerald-accent transition-colors">home</span>
+                    
+                </a>
+            </div>
+            <div class="hidden md:flex items-center gap-8 font-mono-label text-mono-label">
+                
+                <a class="font-mono-label text-mono-label text-emerald-accent font-bold border-b-2 border-emerald-accent pb-1" href="#">Projects</a>
+                
+            </div>
+        </nav>
+    </header>
+
+    
+<main class="pt-32 pb-20">
+    <div class="max-w-[1140px] mx-auto px-6 md:px-gutter">
+        <!-- Hero Header -->
+        <section class="mb-16 text-center md:text-left">
+            <div class="inline-block py-1 px-3 mb-6 bg-slate-800 border border-outline-variant/20 rounded-full font-mono-label text-mono-label text-emerald-accent">
+                Engineering Excellence
+            </div>
+            <h1 class="font-display-lg text-display-lg text-white mb-6">C++ Best Practices</h1>
+            <p class="text-on-surface-variant text-xl max-w-3xl">
+                C++ is a great language when you use it effectively. In this article, I’ll point out details that make my C++ code robust.
+            </p>
+        </section>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-12">
+            <!-- Table of Contents / Sidebar -->
+            <aside class="md:col-span-3">
+                <div class="sticky top-28 p-6 glass-card rounded-xl">
+                    <h2 class="font-mono-label text-mono-label text-white uppercase tracking-widest mb-4">Table of Contents</h2>
+                    <nav class="flex flex-col gap-3 font-body-md text-on-surface-variant">
+                        <a href="#designated-initializers" class="hover:text-emerald-accent transition-colors">Designated Initializers</a>
+                        <a href="#config-structs" class="hover:text-emerald-accent transition-colors">Config Structs</a>
+                        <a href="#lambdas" class="hover:text-emerald-accent transition-colors">Immediately Invoked Lambdas</a>
+                        <a href="#strong-typing" class="hover:text-emerald-accent transition-colors">Strong Typing</a>
+                        <a href="#switch-statements" class="hover:text-emerald-accent transition-colors">Switch Statements</a>
+                        <a href="#variants" class="hover:text-emerald-accent transition-colors">Variants</a>
+                        <a href="#expected" class="hover:text-emerald-accent transition-colors">std::expected</a>
+                        <a href="#no-new" class="hover:text-emerald-accent transition-colors">Absence of New/Malloc</a>
+                        <a href="#multithreading" class="hover:text-emerald-accent transition-colors">Minimal Multithreading</a>
+                        <a href="#metaprogramming" class="hover:text-emerald-accent transition-colors">Minimal Metaprogramming</a>
+                        <a href="#functional" class="hover:text-emerald-accent transition-colors">Minimal Functional/Ranges</a>
+                    </nav>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <article class="md:col-span-9 space-y-16">
+                <!-- Designated Initializers -->
+                <section id="designated-initializers" class="scroll-mt-32">
+                    <div class="flex items-center gap-4 mb-8">
+                        <h2 class="font-headline-lg text-headline-lg text-white">Designated Initializers and Aggregate Types</h2>
+                        <div class="h-px flex-grow bg-outline-variant/30"></div>
+                    </div>
+                    <div class="p-8 glass-card rounded-xl space-y-6">
+                        <p class="text-on-surface-variant">
+                            Whenever possible, I make my structs aggregate types and use designated initializers. Designated initializers make tracking long lists of fields much more manageable.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            Suppose I initialize a transaction via a constructor like this:
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10">
+<pre><code class="language-cpp">funx::transaction::Transaction(  
+    match.product,  
+    match.qty,  
+    match.price,  
+    match.txid,  
+    match.seller_company,  
+    match.buyer_company  
+)</code></pre>
+                        </div>
+                        <p class="text-on-surface-variant">
+                            There is a mistake above, where <code>seller_company</code> and <code>buyer_company</code> are accidentally swapped, but it’s not clear from the local code at all. On the other hand, if I initialize it as
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10">
+<pre><code class="language-cpp">funx::transaction::Transaction{  
+    .product = match.product,  
+    .qty = match.qty,  
+    .price = match.price,  
+    .txid = match.txid,  
+    .buyerId = match.seller_company,  
+    .sellerId = match.buyer_company,  
+}</code></pre>
+                        </div>
+                        <p class="text-on-surface-variant">
+                            then the mistake becomes obvious to the reader.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Config Structs -->
+                <section id="config-structs" class="scroll-mt-32">
+                    <div class="flex items-center gap-4 mb-8">
+                        <h2 class="font-headline-lg text-headline-lg text-white">Config Structs</h2>
+                        <div class="h-px flex-grow bg-outline-variant/30"></div>
+                    </div>
+                    <div class="p-8 glass-card rounded-xl space-y-6">
+                        <p class="text-on-surface-variant">
+                            All my constructors take a <code>Config</code> struct:
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10">
+<pre><code class="language-cpp">struct Config  
+{  
+    funx::TcpPort server_port;  
+};
+
+TcpServerSocket(Config const&amp; c);</code></pre>
+                        </div>
+                        <p class="text-on-surface-variant">
+                            The first benefit is that you can use designated initializers when constructing the class to make the code clearer:
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10">
+<pre><code class="language-cpp">funx::TcpServerSocket server_socket_(funx::TcpServerSocket::Config{  
+  .server_port = c.port  
+})</code></pre>
+                        </div>
+                        <p class="text-on-surface-variant">
+                            The second benefit is support for arbitrary additional fields without expanding parameter lists. For example, we can add a <code>uint32_t</code> <code>max_clients</code> to the config struct. And if you end up adding tons of new fields, some of which have default values, and others do not, you have to go the config-struct route.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            The third benefit is extensibility. Additional configurations can be added as needed. For example, if you need a server that listens to multiple ports, you can add
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10">
+<pre><code class="language-cpp">// For servers that need to listen on multiple ports  
+struct MultiConfig  
+{  
+    std::vector&lt;funx::TcpPort&gt; server_ports;  
+};
+
+TcpServerSocket(MultiConfig const&amp; c);</code></pre>
+                        </div>
+                        <p class="text-on-surface-variant">
+                            The config constructor paradigm essentially gets us factory functions with designated initializers. This is also the standard pattern in Golang.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Immediately Invoked Lambdas -->
+                <section id="lambdas" class="scroll-mt-32">
+                    <div class="flex items-center gap-4 mb-8">
+                        <h2 class="font-headline-lg text-headline-lg text-white">Immediately Invoked Lambdas</h2>
+                        <div class="h-px flex-grow bg-outline-variant/30"></div>
+                    </div>
+                    <div class="p-8 glass-card rounded-xl space-y-6">
+                        <p class="text-on-surface-variant">
+                            I use immediately-invoked lambdas frequently when complicated initialization logic is involved. They are very useful with designated initializers:
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10">
+<pre><code class="language-cpp">AddOrder{  
+    .order = [&amp;]() {  
+        auto rtn = buy;  
+        rtn.qty = buy.qty - sell1.qty - sell2.qty - sell3.qty;  
+        return rtn;  
+     }()  
+}</code></pre>
+                        </div>
+                        <p class="text-on-surface-variant">
+                            This restricts the scope of the temporary <code>rtn</code> variable so that nothing else accidentally accesses it and keeps the initialization logic in the vicinity of where it is being used.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Strong Typing -->
+                <section id="strong-typing" class="scroll-mt-32">
+                    <div class="flex items-center gap-4 mb-8">
+                        <h2 class="font-headline-lg text-headline-lg text-white">Strong Typing</h2>
+                        <div class="h-px flex-grow bg-outline-variant/30"></div>
+                    </div>
+                    <div class="p-8 glass-card rounded-xl space-y-6">
+                        <p class="text-on-surface-variant">
+                            While strong typing like the following may seem excessive:
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10">
+<pre><code class="language-cpp">enum Product : uint64_t {};  
+enum TransactionId : uint64_t {};  
+enum CompanyId : uint64_t {};  
+enum OrderId : uint64_t {};</code></pre>
+                        </div>
+                        <p class="text-on-surface-variant">
+                            It significantly improves safety and code quality. Suppose you have the following function:
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10">
+<pre><code class="language-cpp">// Without strong typing  
+void myFunc(  
+    uint64_t product,  
+    uint64_t transactionId,  
+    uint64_t companyId,  
+    uint64_t orderId)  
+{ ... }
+
+// With strong typing  
+void myFunc(  
+    Product product,  
+    TransactionId transactionId,  
+    CompanyId companyId,  
+    OrderId orderId)
+{ ... }</code></pre>
+                        </div>
+                        <p class="text-on-surface-variant">
+                            When you invoke the function in another distant code file, you are susceptible to accidentally swapping the parameter order. For example:
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10">
+<pre><code class="language-cpp">myFunc(product, transactionId, orderId, companyId);</code></pre>
+                        </div>
+                        <p class="text-on-surface-variant">
+                            With strong typing, the compiler errors out and catches your mistake. Without strong typing, everything is <code>uint64_t</code> and the compiler will not catch the mistake, leaving you to hope your tests catch the bug.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Switch Statements -->
+                <section id="switch-statements" class="scroll-mt-32">
+                    <div class="flex items-center gap-4 mb-8">
+                        <h2 class="font-headline-lg text-headline-lg text-white">Switch Statements Without Default Case</h2>
+                        <div class="h-px flex-grow bg-outline-variant/30"></div>
+                    </div>
+                    <div class="p-8 glass-card rounded-xl space-y-6">
+                        <p class="text-on-surface-variant">
+                            It is advantageous to use a switch statement without a default case:
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10">
+<pre><code class="language-cpp">switch(level)  
+{  
+case LogLevel::DEBUG:  
+    return "DEBUG";  
+case LogLevel::INFO:  
+    return "INFO";  
+case LogLevel::WARN:  
+    return "WARN";  
+case LogLevel::ERR:  
+    return "ERR";  
+case LogLevel::CRIT:  
+    return "CRIT";  
+}  
+return "UNK";</code></pre>
+                        </div>
+                        <p class="text-on-surface-variant">
+                            When the default case is omitted and your switch statement is accidentally missing a case, the compiler emits a warning. Furthermore, if you add a new enum value in the future, the compiler automatically flags all the locations that have not handled the new enum value, making future maintenance easy.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Variants -->
+                <section id="variants" class="scroll-mt-32">
+                    <div class="flex items-center gap-4 mb-8">
+                        <h2 class="font-headline-lg text-headline-lg text-white">Variants for Tracking States</h2>
+                        <div class="h-px flex-grow bg-outline-variant/30"></div>
+                    </div>
+                    <div class="p-8 glass-card rounded-xl space-y-6">
+                        <p class="text-on-surface-variant">
+                            Variants can be used as a more-advanced enum. Gateway sessions have three states:
+                        </p>
+                        <ol class="list-decimal list-inside text-on-surface-variant space-y-2 ml-4">
+                            <li><code>NotConnected</code> is when the client has not yet connected</li>
+                            <li><code>Connected</code> is when the client has established a TCP session but has not logged in.</li>
+                            <li><code>Active</code> is when the client has logged in and we need to automatically cancel all their orders if they haven’t sent a heartbeat in the last 30 seconds.</li>
+                        </ol>
+                        <p class="text-on-surface-variant">
+                            The naive way to track this is as follows:
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10">
+<pre><code class="language-cpp">enum State state_ = State::NotConnected; // NotConnected, Connected, or Active  
+funx::TcpSession session_;  
+funx::Clock::time_point last_msg_time_;</code></pre>
+                        </div>
+                        <p class="text-on-surface-variant">
+                        One problem is if you are in the <code>NotConnected</code> state, this setup requires you to still have a <code>TcpSession</code>. But you can’t provide a valid <code>TcpSession</code> because the client isn’t connected. So you have to hack up your code and make a dummy <code>TcpSession</code>. (Beginners will use a <code>TcpSession*</code> pointer and allocate an actual <code>TcpSession</code> object on the heap once the client connects. This is much less robust.)
+                        </p>
+                        <p class="text-on-surface-variant">
+                        Another less-annoying but valid issue is you have a <code>last_msg_time_</code> variable lying around that is accessible during the <code>NotConnected</code> state, but it shouldn’t be used.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            If we instead handle the state representation with a variant:
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10">
+<pre><code class="language-cpp">// No TCP connection established  
+struct NotConnected {};
+
+// TCP connection established, but not logged in yet  
+struct Connected {  
+    funx::TcpSession session;  
+};
+
+// Logged in and trading is permitted  
+struct Active {  
+    funx::TcpSession session;  
+    funx::Clock::time_point last_msg_time;  
+};
+
+using State = std::variant&lt;  
+    NotConnected,  
+    Connected,  
+    Active  
+&gt;;  
+State state_ = NotConnected{};</code></pre>
+                        </div>
+                        <p class="text-on-surface-variant">
+                            Then when the state is <code>NotConnected</code>, you do not need to provide a <code>TcpSession</code> anymore! And similarly <code>last_msg_time</code> is only accessible in the <code>Active</code> state.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            Finally, if you want to handle the state, you can call <code>std::visit</code> on a variant
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10">
+<pre><code class="language-cpp">std::visit(funx::overloaded{  
+    [&amp;](Session::NotConnected&amp;) {  
+        // client cannot send us new messages if they're not connected  
+    },  
+    [&amp;](Session::Connected&amp; c) {  
+        pollConnectedState(c, now);  
+    },  
+    [&amp;](Session::Active&amp; a) {  
+        pollActiveState(a, now);  
+    }  
+}, state_);</code></pre>
+                        </div>
+                        <p class="text-on-surface-variant">
+                            If you are missing handlers for a state, the compiler will error out. This ensures you never accidentally forget to handle a case.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- std::expected -->
+                <section id="expected" class="scroll-mt-32">
+                    <div class="flex items-center gap-4 mb-8">
+                        <h2 class="font-headline-lg text-headline-lg text-white"><code>std::expected</code> and Limited Exception Throwing</h2>
+                        <div class="h-px flex-grow bg-outline-variant/30"></div>
+                    </div>
+                    <div class="p-8 glass-card rounded-xl">
+                        <p class="text-on-surface-variant leading-relaxed">
+                            When thrown liberally, exceptions make code harder to understand because you have no idea whether something further down the call chain will throw. Therefore, in my codebase, the only places where I throw exceptions are constructors. Once the application starts up and begins the fastpath loop, none of the code I write can directly throw exceptions (calls to libraries might indirectly throw, of course).
+                        </p>
+                        <p class="text-on-surface-variant leading-relaxed mt-4">
+                            To deal with error cases, I use <code>std::expected</code>. A couple extensions that I did not include here: first, we can create another type to inherit from <code>std::expected</code> and mark it as <code>[[nodiscard]]</code>. If we ever forget to check the error case, the compiler will warn us. And second, with minor effort all the constructors that currently throw exceptions can be refactored into <code>createOrThrow</code> factory functions that make it even more obvious the call might throw.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Absence of New/Malloc -->
+                <section id="no-new" class="scroll-mt-32">
+                    <div class="flex items-center gap-4 mb-8">
+                        <h2 class="font-headline-lg text-headline-lg text-white">Absence of New/Malloc</h2>
+                        <div class="h-px flex-grow bg-outline-variant/30"></div>
+                    </div>
+                    <div class="p-8 glass-card rounded-xl">
+                        <p class="text-on-surface-variant leading-relaxed">
+                            Throughout the entire codebase, I never explicitly allocate heap memory. There are no calls to <code>new</code>, <code>malloc</code>, <code>make_unique</code>, or <code>make_shared</code>. All the code I directly wrote uses stack-allocated memory. This eliminates the possibility of memory leaks in my code. Of course, the libraries I import use heap memory, but those are open-source, well-vetted, and well-tested.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Minimal Multithreading -->
+                <section id="multithreading" class="scroll-mt-32">
+                    <div class="flex items-center gap-4 mb-8">
+                        <h2 class="font-headline-lg text-headline-lg text-white">Minimal Multithreading</h2>
+                        <div class="h-px flex-grow bg-outline-variant/30"></div>
+                    </div>
+                    <div class="p-8 glass-card rounded-xl space-y-4">
+                        <p class="text-on-surface-variant leading-relaxed">
+                            Avoid multi-threading where possible to minimize debugging complexity. All the production code is intentionally single-threaded by design (each service is capable of handling many clients though!). Once the logic becomes single-threaded, it becomes deterministic and extremely straightforward to test. Concurrency bugs are no longer possible.
+                        </p>
+                        <p class="text-on-surface-variant leading-relaxed">
+                            One important extension is to offload all your logging to a separate thread bound to a separate CPU. That way you don’t have disk writes in your fastpath. I skipped this for simplicity and this being a mock project. I did abstract all the logging behind an interface and it would be straightforward to refactor the implementation to offload to a different thread via a concurrent queue.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Minimal Metaprogramming -->
+                <section id="metaprogramming" class="scroll-mt-32">
+                    <div class="flex items-center gap-4 mb-8">
+                        <h2 class="font-headline-lg text-headline-lg text-white">Minimal Template Metaprogramming, SFINAE, Concepts</h2>
+                        <div class="h-px flex-grow bg-outline-variant/30"></div>
+                    </div>
+                    <div class="p-8 glass-card rounded-xl space-y-6">
+                        <p class="text-on-surface-variant">
+                            I generally try to avoid template metaprogramming and SFINAE. In my opinion, it makes code difficult to understand and maintain. 
+                        </p>
+                        <p class="text-on-surface-variant">
+                            I find it sometimes acceptable to use SFINAE and Concepts when dealing with binary protocols. For example, many messages in a protocol might all have a field <code>price</code> and you might want to define a function that operates solely on messages with a price:
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10">
+<pre><code class="language-cpp">template&lt;typename Msg&gt;  
+concept MsgWithPrice = requires(Msg msg) {  
+    { msg.price } -&gt; std::same_as&lt;Price&amp;&gt;;   
+};
+
+template &lt;MsgWithPrice Msg&gt;  
+void operateOnPrice(Msg msg) { ... }</code></pre>
+                        </div>
+                        <p class="text-on-surface-variant">
+                            Overall, it is best to keep complex template operations to a minimum.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Minimal Functional/Ranges -->
+                <section id="functional" class="scroll-mt-32">
+                    <div class="flex items-center gap-4 mb-8">
+                        <h2 class="font-headline-lg text-headline-lg text-white">Minimal Functional Programming and Ranges</h2>
+                        <div class="h-px flex-grow bg-outline-variant/30"></div>
+                    </div>
+                    <div class="p-8 glass-card rounded-xl space-y-6">
+                        <p class="text-on-surface-variant">
+                            Functional programming and ranges have benefits, but I prefer to use them only when they clearly improve readability over the traditional imperative style. For example, when logging a list of product IDs in human-readable format, I use ranges:
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10">
+<pre><code class="language-cpp">LOG_INFO("    products=[{}]",  
+    cfg.products  
+        | std::views::transform([](funx::Product p) {  
+            return std::format("{}", p);  
+          })  
+        | std::views::join_with(std::string(","))  
+        | std::ranges::to&lt;std::string&gt;()  
+);</code></pre>
+                        </div>
+                        <p class="text-on-surface-variant">
+                            It’s more concise and obvious compared to a traditional C++ for loop where we explicitly have special handling for element 0:
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10">
+<pre><code class="language-cpp">std::string product_list_str;  
+ if (cfg.products.size() &gt; 0) {  
+     product_list_str += std::format("{}", cfg.products[0]);  
+ }  
+ for (size_t i = 1; i &lt; cfg.products.size(); ++i) {  
+     product_list_str += std::format(",{}", cfg.products[i]);  
+ }  
+ LOG_INFO("    products=[{}]", product_list_str);</code></pre>
+                        </div>
+                        <p class="text-on-surface-variant">
+                            However, in my experience, using ranges and functional programming for complex logic gets hairy when the logic you’re trying to accomplish doesn’t fit perfectly into the continuation functions that are available. In these situations, it is better to stick with traditional imperative programming.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Navigation Footer -->
+                <div class="pt-8 border-t border-outline-variant/20 flex justify-start">
+                    <a href="gpu-store.html" class="inline-flex items-center gap-2 text-electric-blue hover:text-emerald-accent transition-colors font-mono-label">
+                        <span class="material-symbols-outlined">arrow_back</span>
+                        Back to GPU Store Project
+                    </a>
+                </div>
+            </article>
+        </div>
+    </div>
+</main>
+
+
+    <!-- Footer -->
+    <footer class="w-full py-12 bg-surface-container-lowest border-t border-outline-variant/10">
+        <div class="max-w-[1140px] mx-auto px-6 md:px-gutter flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="font-mono-code text-mono-code text-primary">
+                MY RESUME
+            </div>
+            <div class="font-mono-label text-mono-label text-on-surface-variant flex gap-8">
+                <a class="hover:text-secondary transition-colors" href="https://github.com/portfolio4">GitHub</a>
+            </div>
+            <div class="font-mono-label text-mono-label text-on-surface-variant text-center md:text-right">
+                © 2026
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Atmospheric Elements -->
+    <script>
+        // Simple scroll reveal for cards
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.style.opacity = "0";
+            card.style.transform = "translateY(20px)";
+            card.style.transition = "all 0.6s cubic-bezier(0.22, 1, 0.36, 1)";
+            observer.observe(card);
+        });
+
+        // Mouse tracking for glow effect
+        document.querySelectorAll('.mouse-tracking-glow').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
+</body>
+</html>
