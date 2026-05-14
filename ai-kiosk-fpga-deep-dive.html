@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>AI Food Kiosk FPGA Deep Dive</title>
+    <link href="assets/fonts/fonts.css" rel="stylesheet"/>
+    <link href="assets/vendor/tailwind/tailwind.min.css" rel="stylesheet"/>
+    
+    <!-- Prism Syntax Highlighting -->
+    <link href="assets/vendor/prism/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="assets/vendor/prism/prism.min.js"></script>
+    <script src="assets/vendor/prism/prism-c.min.js"></script>
+    <script src="assets/vendor/prism/prism-cpp.min.js"></script>
+
+    <style>
+        body { background-color: #0b1326; color: #dae2fd; }
+        .article-intro {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-size: 1.0625rem;
+            font-weight: 400;
+            line-height: 1.8;
+            letter-spacing: normal;
+            max-width: 65ch;
+        }
+        #skill-content code {
+            font-family: "JetBrains Mono", ui-monospace, monospace;
+            font-size: 0.9375em;
+            background: rgba(173, 198, 255, 0.08);
+            padding: 0.1em 0.3em;
+            border-radius: 0.25rem;
+            overflow-wrap: anywhere;
+        }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .timeline-gradient { background: linear-gradient(180deg, #3b82f6 0%, transparent 100%); }
+        .glass-card { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .mouse-tracking-glow { position: relative; overflow: hidden; }
+        .mouse-tracking-glow::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(
+                300px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(173, 198, 255, 0.15) 0%,
+                transparent 70%
+            );
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .mouse-tracking-glow:hover::before { opacity: 1; }
+        .mouse-tracking-glow > * { position: relative; z-index: 1; }
+        .typewriter-line { display: inline-block; overflow: hidden; white-space: nowrap; border-right: 4px solid transparent; width: 0; }
+        @keyframes hero-load {
+            0% { opacity: 0; transform: scale(1.25); }
+            100% { opacity: 1.0; transform: scale(1); }
+        }
+        .hero-bg-animate {
+            animation: hero-load 5s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md overflow-x-hidden selection:bg-electric-blue selection:text-white">
+    <!-- TopNavBar -->
+    <header class="fixed top-0 w-full z-50 bg-surface/30 backdrop-blur-md border-b border-outline-variant/10">
+        <nav class="flex justify-between items-center px-6 md:px-gutter max-w-[1140px] mx-auto h-20">
+            <div class="font-display-lg text-headline-lg font-black text-primary dark:text-primary tracking-tighter">
+                <a href="index.html" class="flex items-center gap-2">
+                    
+                    <span class="material-symbols-outlined text-on-surface-variant hover:text-emerald-accent transition-colors">home</span>
+                    
+                </a>
+            </div>
+            <div class="hidden md:flex items-center gap-8 font-mono-label text-mono-label">
+                
+                <a class="font-mono-label text-mono-label text-emerald-accent font-bold border-b-2 border-emerald-accent pb-1" href="#">Projects</a>
+                
+            </div>
+        </nav>
+    </header>
+
+    
+<style>
+    .fpga-deep-dive :not(pre) > code { overflow-wrap: anywhere; }
+    .fpga-deep-dive pre { margin: 0; }
+</style>
+<main class="fpga-deep-dive pt-32 pb-20">
+    <div class="max-w-[1140px] mx-auto px-6 md:px-gutter">
+        <!-- Hero Header -->
+        <section class="mb-16 text-center md:text-left">
+            <div class="inline-block py-1 px-3 mb-6 bg-slate-800 border border-outline-variant/20 rounded-full font-mono-label text-mono-label text-emerald-accent">
+                Technical Analysis
+            </div>
+            <h1 class="font-display-lg text-display-lg text-white mb-6">AI Food Kiosk FPGA Deep Dive</h1>
+            <p class="article-intro text-on-surface-variant">
+                A complete FPGA request-matching system: host communication, a four-cycle trigger pipeline, and reusable hardware components.
+            </p>
+        </section>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-12">
+            <!-- Table of Contents / Sidebar -->
+            <aside class="md:col-span-3">
+                <div class="sticky top-28 p-6 glass-card rounded-xl">
+                    <h2 class="font-mono-label text-mono-label text-white uppercase tracking-widest mb-4">Table of Contents</h2>
+                    <nav aria-label="Table of contents" class="flex flex-col gap-3 font-body-md text-on-surface-variant">
+                        <a href="#project-goal" class="hover:text-emerald-accent transition-colors">Project Goal</a>
+                        <a href="#deep-dive-goals" class="hover:text-emerald-accent transition-colors">Deep Dive Goals</a>
+                        <a href="#performance-statistics" class="hover:text-emerald-accent transition-colors">Performance Statistics</a>
+                        <a href="#engineering-from-zero" class="hover:text-emerald-accent transition-colors">Engineering from Zero</a>
+                        <a href="#latency-aware-engineering" class="hover:text-emerald-accent transition-colors">Latency Aware Engineering</a>
+                        <a href="#building-reusable-fpga-ips" class="hover:text-emerald-accent transition-colors">Building Reusable FPGA IPs</a>
+                    </nav>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <article class="md:col-span-9 min-w-0 space-y-16">
+                <section id="project-goal" class="scroll-mt-32">
+                    <div class="flex items-center gap-4 mb-8">
+                        <h2 class="font-headline-lg text-headline-lg text-white">Project Goal</h2>
+                        <div class="h-px flex-grow bg-outline-variant/30"></div>
+                    </div>
+                    <div class="p-6 md:p-8 glass-card rounded-xl space-y-6">
+                        <p class="text-on-surface-variant">
+                            The goal of this project is to demonstrate how an FPGA can implement a fast, specialized approximation of a slower, more-general computation.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            In our AI Food Kiosk, speech recognition converts customer requests into text, which is forwarded to both an LLM agent and an FPGA-based pattern matcher. The FPGA recognizes a small set of predefined requests and immediately returns programmed actions, while the LLM handles requests requiring more general reasoning.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            The FPGA is intentionally much less capable than the LLM. Its pattern matching can produce false positives, making it unsuitable for taking real customer orders without additional safeguards. However, this simplified application demonstrates a useful architectural pattern: performing common, predictable operations in dedicated hardware while retaining a more capable software fallback.
+                        </p>
+                    </div>
+                </section>
+
+                <section id="deep-dive-goals" class="scroll-mt-32">
+                    <div class="flex items-center gap-4 mb-8">
+                        <h2 class="font-headline-lg text-headline-lg text-white">Deep Dive Goals</h2>
+                        <div class="h-px flex-grow bg-outline-variant/30"></div>
+                    </div>
+                    <div class="p-6 md:p-8 glass-card rounded-xl space-y-6">
+                        <p class="text-on-surface-variant">
+                            This article focuses on three main topics:
+                        </p>
+                        <ol class="list-decimal list-outside text-on-surface-variant space-y-4 ml-6">
+                            <li><strong class="text-white">Engineering a complete system from zero.</strong> Starting with a Basys3 FPGA, a laptop, and a USB connection, I designed and implemented the communication protocols, hardware modules, and host software needed to build a working system.</li>
+                            <li><strong class="text-white">Latency-aware engineering.</strong> I identified the latency-critical operations, mapped them to parallel hardware, and measured the resulting latency and resource utilization.</li>
+                            <li><strong class="text-white">Building Reusable FPGA IPs.</strong> Rather than building application-specific RTL for every function, I developed and tested a library of reusable components for communication, streaming, buffering, and data processing.</li>
+                        </ol>
+                    </div>
+                </section>
+
+                <section id="performance-statistics" class="scroll-mt-32">
+                    <div class="flex items-center gap-4 mb-8">
+                        <h2 class="font-headline-lg text-headline-lg text-white">Performance Statistics</h2>
+                        <div class="h-px flex-grow bg-outline-variant/30"></div>
+                    </div>
+                    <div class="p-6 md:p-8 glass-card rounded-xl space-y-6">
+                        <div class="overflow-x-auto" role="region" aria-label="FPGA performance statistics" tabindex="0">
+                            <table class="w-full text-left text-on-surface-variant">
+                                <caption class="sr-only">FPGA performance statistics</caption>
+                                <tbody>
+                                    <tr class="border-b border-outline-variant/20">
+                                        <th scope="row" class="py-3 pr-6 font-bold text-white">FPGA Hardware</th>
+                                        <td class="py-3">Basys3, Artix-7 Device</td>
+                                    </tr>
+                                    <tr class="border-b border-outline-variant/20">
+                                        <th scope="row" class="py-3 pr-6 font-bold text-white">Clock Rate</th>
+                                        <td class="py-3">100MHz</td>
+                                    </tr>
+                                    <tr class="border-b border-outline-variant/20">
+                                        <th scope="row" class="py-3 pr-6 font-bold text-white">Trigger Conditions</th>
+                                        <td class="py-3">8 patterns, up to 32 chars each</td>
+                                    </tr>
+                                    <tr class="border-b border-outline-variant/20">
+                                        <th scope="row" class="py-3 pr-6 font-bold text-white">Trigger Reactions</th>
+                                        <td class="py-3">8 reactions up to 255 bytes each (including headers)</td>
+                                    </tr>
+                                    <tr class="border-b border-outline-variant/20">
+                                        <th scope="row" class="py-3 pr-6 font-bold text-white">LUT utilization</th>
+                                        <td class="py-3">Approx 14.8k/20.8k (71%)</td>
+                                    </tr>
+                                    <tr class="border-b border-outline-variant/20">
+                                        <th scope="row" class="py-3 pr-6 font-bold text-white">Register utilization</th>
+                                        <td class="py-3">Approx 8.8k/41.6k (21%)</td>
+                                    </tr>
+                                    <tr class="border-b border-outline-variant/20">
+                                        <th scope="row" class="py-3 pr-6 font-bold text-white">Block RAM tiles</th>
+                                        <td class="py-3">1.5 tiles</td>
+                                    </tr>
+                                    <tr class="border-b border-outline-variant/20">
+                                        <th scope="row" class="py-3 pr-6 font-bold text-white">Timing</th>
+                                        <td class="py-3">Met, +0.143ns setup slack</td>
+                                    </tr>
+                                    <tr class="border-b border-outline-variant/20">
+                                        <th scope="row" class="py-3 pr-6 font-bold text-white">Trigger Processing Latency</th>
+                                        <td class="py-3">4 cycles (40ns at 100MHz)</td>
+                                    </tr>
+                                    <tr class="border-b border-outline-variant/20">
+                                        <th scope="row" class="py-3 pr-6 font-bold text-white">Throughput</th>
+                                        <td class="py-3">Transport-limited. (Discussed in depth later)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="engineering-from-zero" class="scroll-mt-32">
+                    <div class="flex items-center gap-4 mb-8">
+                        <h2 class="font-headline-lg text-headline-lg text-white">Engineering from Zero</h2>
+                        <div class="h-px flex-grow bg-outline-variant/30"></div>
+                    </div>
+                    <div class="p-6 md:p-8 glass-card rounded-xl space-y-6">
+                        <p class="text-on-surface-variant">
+                            When starting an FPGA project from scratch, the first thing we have to build out is the communication between host and FPGA. I have a Basys3 FPGA with a USB connection on the J4 port. Per the Basys3 manual, user data over the J4 USB bridge is hardwired exclusively for UART.
+                        </p>
+                        <h3 id="uart-bitstream" class="scroll-mt-32 text-2xl font-bold text-white">UART Bitstream</h3>
+                        <p class="text-on-surface-variant">
+                            UART is a protocol for transmitting bytes over a connection one bit at a time. Here is an example diagram of how UART transmits the bits 01101110 at 115,200 baud.
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10" role="region" aria-label="UART bitstream at 115,200 baud" tabindex="0">
+<pre><code class="language-none">  Time ------------------------------------------------------------------&gt;
+
+           Idle   Start   D0    D1    D2    D3    D4    D5    D6    D7   Stop
+  Value      1      0      0     1     1     1     0     1     1     0     1
+
+  HIGH   --------+           +-----------------+     +-----------+     +-------
+                 |           |                 |     |           |     |
+  LOW            +-----------+                 +-----+           +-----+
+                    ^     ^     ^     ^     ^     ^     ^     ^     ^     ^
+  RX samples:     Start   D0    D1    D2    D3    D4    D5    D6    D7   Stop
+
+  Interval (us): |&lt;---&gt;|&lt;---&gt;|&lt;---&gt;|&lt;---&gt;|&lt;---&gt;|&lt;---&gt;|&lt;---&gt;|&lt;---&gt;|&lt;---&gt;|&lt;---&gt;|
+
+                 |&lt;---&gt;|
+                 8.68 us interval per bit, ^ indicates sampling near center of each interval</code></pre>
+                        </div>
+                        <p class="text-on-surface-variant">
+                            Both the sender and receiver agree to the same bit rate (a.k.a baud rate). At 115,200 baud, the sender holds each bit’s voltage for approximately 8.68us, or 868 cycles of the Basys3’s 100 MHz clock. The receiver detects the falling edge of the start bit, samples near its midpoint to validate it, and subsequently samples each data bit at one-bit intervals.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            In our central FPGA library, we created <code>fdk_uart_tx</code> and <code>fdk_uart_rx</code> reusable IPs to handle the UART bitstream functionality.
+                        </p>
+                        <h3 id="channel-framing" class="scroll-mt-32 text-2xl font-bold text-white">Channel Framing</h3>
+                        <p class="text-on-surface-variant">
+                            On top of the UART byte stream, we build a channel protocol. Each channel frame is 10 bytes. The first byte is a channel ID. The second byte contains descriptor bits, such as start-of-packet (SOP) and end-of-packet (EOP). The remaining 8 bytes are payload data.
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10" role="region" aria-label="Channel frame and descriptor layout" tabindex="0">
+<pre><code class="language-none"> Transmission order ----------------------------------------------&gt;
+
+  Byte      0          1          2       3              8       9
+       +----------+------------+-------+-------+-----+-------+-------+
+       |Channel ID| Descriptor |  D0   |  D1   | ... |  D6   |  D7   |
+       +----------+------------+-------+-------+-----+-------+-------+
+       |&lt;-- Header: 2 bytes --&gt;|&lt;-------- Payload: 8 bytes ---------&gt;|
+
+  Descriptor (byte 1):
+       Bit   7    6    5    4    3    2    1    0
+           +-----------------------------+----+----+
+           |        Reserved (0)         |EOP |SOP |
+           +-----------------------------+----+----+</code></pre>
+                        </div>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10" tabindex="0">
+<pre><code class="language-cpp">struct [[gnu::packed]] ChannelFrame {
+     static constexpr std::uint8_t SOP = 1 &lt;&lt; 0;
+     static constexpr std::uint8_t EOP = 1 &lt;&lt; 1;
+
+     std::uint8_t channel_id = 0;
+     std::uint8_t descriptor = 0;
+     std::byte payload[fdk::fpga::platform::CHANNEL_PAYLOAD_BYTES]{};
+ };</code></pre>
+                        </div>
+                        <p class="text-on-surface-variant">
+                            If the overall message is not a perfect multiple of 8 bytes, the last frame will have unused bytes. It is up to the higher level protocol to encode enough information to identify these boundaries, such as with a <code>msg_len</code> field in a header.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            I explicitly chose this 10-byte structure for two reasons:
+                        </p>
+                        <ol class="list-decimal list-outside text-on-surface-variant space-y-4 ml-6">
+                            <li>The logic is simple. You don’t have to track how many bytes you’ve received versus how many bytes you expect. Every chunk is always 10 bytes.</li>
+                            <li>A round-robin arbiter can mux 10-byte channel frames across channels in any order. This prevents any single channel with a large packet from hogging the entire bandwidth.</li>
+                        </ol>
+                        <p class="text-on-surface-variant">
+                            The tradeoff is the transmission overhead. For every 10 bytes of data on the wire, we only send 8 bytes payload data. We could improve this to 9 bytes of data for 8 bytes of payload by having only 64 channels and using the two freed up bits to indicate SOP/EOP.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            Both the host and FPGA implement logic to aggregate payload data on a per-channel basis. On the FPGA, we implemented <code>fdk_channel_rx</code> and <code>fdk_channel_tx</code> reusable IPs to handle channel decoding. We also built a wrapper <code>fdk_uart_channel_endpoint</code> IP that deserializes <code>uart_rx</code> bits into rx channel data and serializes tx channel data into <code>uart_tx</code> bits.
+                        </p>
+                        <h3 id="message-protocol" class="scroll-mt-32 text-2xl font-bold text-white">Message Protocol</h3>
+                        <p class="text-on-surface-variant">
+                            On top of the channel protocol, we built a straightforward message protocol.
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10" tabindex="0">
+<pre><code class="language-cpp">struct [[gnu::packed]] MsgHeader {
+    std::uint16_t msg_size;
+    std::uint32_t seq;
+    std::uint32_t ack_seq;
+    std::uint16_t msg_type;
+};
+
+template &lt;typename T&gt;
+struct [[gnu::packed]] Message {
+    MsgHeader msg_hdr;
+    // Empty message bodies occupy no bytes in the wire format.
+    [[no_unique_address]] T msg;
+};</code></pre>
+                        </div>
+                        <p class="text-on-surface-variant">
+                            <code>msg_size</code> is the full length of the packet, including the header and the <code>msg_size</code> field. seq increases by <code>msg_size</code> for every packet. <code>ack_seq</code> is the last seq you received from the other endpoint. Finally, <code>msg_type</code> identifies the contents of the payload following this MsgHeader. The byte ordering for everything is little endian.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            Senders and receivers can use seq and <code>ack_seq</code> to detect loss, however handling and recovering from data loss over a USB cable was not in scope for our MVP. Overall, the message protocol is designed such that if you were to produce a dump of data over a channel, you could reconstruct the sequence of messages.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            We created <code>fdk_message_rx</code> and <code>fdk_message_tx</code> reusable IPs to handle message decoding for one specific channel.
+                        </p>
+                        <h3 id="application-system-diagram" class="scroll-mt-32 text-2xl font-bold text-white">Application System Diagram</h3>
+                        <p class="text-on-surface-variant">
+                            Once we have FPGA &lt;&gt; Host communication in place, we can build out the application logic. Here is a high level diagram:
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10" role="region" aria-label="Application system diagram" tabindex="0">
+<pre><code class="language-none">                       +-------------------+
+                       |       HOST        |
+                       +---------+---------+
+                                 ^
+                                 | UART (115200)
+                                 v
+                +---------------------------------+
+                | Channel routing / Response mux  |&lt;---------------------+
+                +----------------+----------------+                      |
+                                 |                                       |
+           +---------------------+---------------------+                 |
+           |                     |                     |                 |
+      Admin channel    Program Actions channel   Trigger channel         |
+           |                     |                     |                 |
+           v                     v                     v                 |
+  +----------------+   +-------------------+   +------------------+      |
+  | Admin Handler  |   | Program Actions   |   | Stimulus Handler |      |
+  |                |   |     Handler       |   |                  |      |
+  | Echo / Test    |   | Program / Disable |   | Parse stimulus   |      |
+  +----------------+   +---------+---------+   +--------+---------+      |
+                                 |                     |                 |
+                  +--------------+                     |                 |
+                  |              |                     |                 |
+           Reaction data    Condition config     Stimulus stream         |
+                  |              |                     |                 |
+                  v              +-----------+         |                 |
+         +------------------+                |         |                 |
+         | Reaction Storage |                v         v                 |
+         |                  |       +-----------------------+            |
+         | Stored responses |       | Condition Evaluator   |            |
+         |                  |&lt;------|                       |            |
+         |                  | fire  | Match stimulus against|            |
+         +--------+---------+       | programmed conditions |            |
+                  |                 +-----------------------+            |
+                  |                                                      |
+                  +---------- Reaction (Trigger channel) ----------------+</code></pre>
+                        </div>
+                        <p class="text-on-surface-variant">
+                            The Admin Handler and Program Actions Handler form the control plane: they initialize the FPGA and configure conditions and reactions in the condition evaluator and reaction storage.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            Once configured, the FPGA can process incoming stimuli and generate reactions without involving the host software in the decision-making process. The next section examines how the Stimulus Handler, Condition Evaluator, and Reaction Storage work together to minimize the number of clock cycles in the latency-critical path between detecting a match and emitting a reaction.
+                        </p>
+                    </div>
+                </section>
+
+                <section id="latency-aware-engineering" class="scroll-mt-32">
+                    <div class="flex items-center gap-4 mb-8">
+                        <h2 class="font-headline-lg text-headline-lg text-white">Latency Aware Engineering</h2>
+                        <div class="h-px flex-grow bg-outline-variant/30"></div>
+                    </div>
+                    <div class="p-6 md:p-8 glass-card rounded-xl space-y-6">
+                        <p class="text-on-surface-variant">
+                            The FPGA’s latency-critical path begins when the Stimulus Handler receives the input beat that completes a trigger condition, and ends when the first beat of the corresponding reaction is emitted.
+                        </p>
+                        <h3 id="stimulus-and-reaction-wire-format" class="scroll-mt-32 text-2xl font-bold text-white">Stimulus and Reaction Wire Format</h3>
+                        <p class="text-on-surface-variant">
+                            Stimuli have the following format:
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10" tabindex="0">
+<pre><code class="language-cpp">__extension__ struct [[gnu::packed]] Stimulus {
+    std::byte preamble[7] = {
+        std::byte{0xaa}, std::byte{0xaa}, std::byte{0xaa}, std::byte{0xaa},
+        std::byte{0xaa}, std::byte{0xaa}, std::byte{0xaa}
+    };
+    std::byte start_frame_delimiter = std::byte{0xab};
+    std::uint64_t request_id;
+    std::uint16_t length;
+    std::byte payload[];
+};</code></pre>
+                        </div>
+                        <p class="text-on-surface-variant">
+                            and reactions have the following format:
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10" tabindex="0">
+<pre><code class="language-cpp">__extension__ struct [[gnu::packed]] Reaction {
+    std::byte preamble[7] = {
+        std::byte{0xaa}, std::byte{0xaa}, std::byte{0xaa}, std::byte{0xaa},
+        std::byte{0xaa}, std::byte{0xaa}, std::byte{0xaa}
+    };
+    std::byte start_frame_delimiter = std::byte{0xab};
+    std::uint64_t request_id;
+    std::uint8_t trigger_condition_id;
+    std::uint8_t reaction_len;
+    std::byte payload[];
+};</code></pre>
+                        </div>
+                        <p class="text-on-surface-variant">
+                            These packets are sent on the Trigger channel, which does not use the MessageHeader protocol discussed earlier. Instead, we require receivers to parse the packet length out of the data stream and track bytes received to keep the problem similar to parsing Ethernet, IP, and TCP packets.
+                        </p>
+                        <h3 id="important-fast-path-considerations" class="scroll-mt-32 text-2xl font-bold text-white">Important Fast Path Considerations</h3>
+                        <p class="text-on-surface-variant">
+                            Here are two key considerations of our fast path to take note of:
+                        </p>
+                        <h4 id="property-1-process-data-as-fast-as-it-comes-in" class="scroll-mt-32 text-lg font-bold text-white">Property 1: Process Data As Fast As It Comes In</h4>
+                        <p class="text-on-surface-variant">
+                            In an Ethernet setup (often 10G), if you can’t keep up with the data rate, you will drop data. Even if you add buffers, sustained bursts can overrun it.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            Our fast path accepts data as soon as it comes in, does not backpressure or buffer, and uses pipelined stages to split a complex process into smaller synthesizable pieces.
+                        </p>
+                        <h4 id="property-2-minimize-cycles-between-match-and-fire" class="scroll-mt-32 text-lg font-bold text-white">Property 2: Minimize Cycles Between Match and Fire</h4>
+                        <p class="text-on-surface-variant">
+                            Define the start cycle to be the cycle on which the stimulus handler receives the beat that matches the trigger condition.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            Define the stop cycle to be the first byte of the outbound Reaction message.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            We want to minimize the value of stop - start .
+                        </p>
+                        <h3 id="stage-1-stimulus-handler" class="scroll-mt-32 text-2xl font-bold text-white">Stage 1: Stimulus Handler</h3>
+                        <p class="text-on-surface-variant">
+                            Now, let’s dive into the first stage of our fast path: the stimulus handler. The stimulus handler extracts payload beats from the main Stimulus message. It scans for the preamble and SFD, extracts the <code>request_id</code> and length fields, and feeds the next length bytes plus SOP and EOP framing into our condition evaluator component.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            In all, Stimulus Handler processing takes one cycle.
+                        </p>
+                        <h3 id="stage-2-condition-evaluator" class="scroll-mt-32 text-2xl font-bold text-white">Stage 2: Condition Evaluator</h3>
+                        <p class="text-on-surface-variant">
+                            The condition evaluator takes an input beat from the stimulus handler and feeds it to <code>MAX_CONDITIONS</code> instances of our <code>fdk_fast_string_contains</code> algorithm. Each <code>fdk_fast_string_contains</code> algorithm processes the entire input beat combinationally in the same cycle.
+                        </p>
+                        <h4 id="fdk-fast-string-contains-algorithm" class="scroll-mt-32 text-lg font-bold text-white"><code>fdk_fast_string_contains</code> Algorithm</h4>
+                        <p class="text-on-surface-variant">
+                            The <code>fdk_fast_string_contains</code> algorithm deserves a detailed walkthrough.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            At a high level, we keep a window of the last <code>MAX_PATTERN_LEN</code> + <code>CHARS_PER_BEAT</code> characters. Then we check if the <code>MAX_PATTERN_LEN</code> characters ending at each of the <code>CHARS_PER_BEAT</code> characters in the latest beat perfectly matches the pattern. This combinational comparison performs <code>CHARS_PER_BEAT</code> equality comparisons across <code>MAX_PATTERN_LEN</code> bytes. It is resource-intensive, but completes within the same cycle. This parallelism reduces processing latency at the expense of hardware resources
+                        </p>
+                        <p class="text-on-surface-variant">
+                            Let’s walk through an example now. Suppose we have 2 bytes per beat, maximum pattern length 4, and the pattern we’re trying to match is “ABC”.
+                        </p>
+                        <h5 id="preparing-the-pattern" class="scroll-mt-32 text-lg font-bold text-white">Preparing the Pattern</h5>
+                        <p class="text-on-surface-variant">
+                            In the slow path, we create a right-aligned pattern.  If the pattern is shorter than <code>MAX_PATTERN_LEN</code>, we will have leading 0 bytes that mean anything is allowed to match this character. This right-aligned, leading-0-byte pattern is necessary to allow us to compare against fixed window sizes regardless of the pattern length. The library <code>fdk_fast_string_contains_pattern_preparer</code> helper module abstracts out this pattern preparation logic.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            From the right-aligned pattern, we produce a mask to identify which bytes matter and which bytes don’t. Later on, this mask will be used in <code>byte_matches[i]</code> = (mask[i]) || (<code>window_slice[i]</code> == pattern[i]) .
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10" role="region" aria-label="Right-aligned pattern and wildcard mask" tabindex="0">
+<pre><code class="language-none">Pattern:       [ 0 ][ A ][ B ][ C ]
+Wildcard mask: [ 1 ][ 0 ][ 0 ][ 0 ]
+                 |
+                 +-- Ignore this byte during comparison
+
+Effective pattern: [ * ][ A ][ B ][ C ]</code></pre>
+                        </div>
+                        <h5 id="appending-a-new-beat" class="scroll-mt-32 text-lg font-bold text-white">Appending a New Beat</h5>
+                        <p class="text-on-surface-variant">
+                            Suppose the previous history was “ZZAB” and new beat comes in now: “CD”. We append “CD” on to the previous history to get a combined buffer “ZZABCD”
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10" role="region" aria-label="Appending the current input beat to the previous history" tabindex="0">
+<pre><code class="language-none">Previous history                 Current input
+ [ Z ][ Z ][ A ][ B ]              [ C ][ D ]
+           |                            |
+           +-------------+--------------+
+                         |
+                         v
+ combined:
+ [ Z ][ Z ][ A ][ B ][ C ][ D ]
+ |------ history ----|- input -|</code></pre>
+                        </div>
+                        <h5 id="comparing-the-pattern-at-every-end-index" class="scroll-mt-32 text-lg font-bold text-white">Comparing the Pattern at Every End Index</h5>
+                        <p class="text-on-surface-variant">
+                            Now, it’s time to check every possible match ending at each character in the latest received beat “CD”. So we check two candidates: the 4 characters ending at “C” and the 4 character ending at “D”:
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10" role="region" aria-label="Parallel pattern comparisons at each input character" tabindex="0">
+<pre><code class="language-none">combined:  [ Z ][ Z ][ A ][ B ][ C ][ D ]
+                 |-----------------|
+ candidate 1:    [ Z ][ A ][ B ][ C ]
+ pattern:        [ * ][ A ][ B ][ C ] ----&gt; MATCH
+                                           |
+                      |-----------------|  |
+ candidate 0:         [ A ][ B ][ C ][ D ] |
+ pattern:             [ * ][ A ][ B ][ C ] |---&gt; NO MATCH
+                                           |
+                       +-------------------+
+                       |
+                       v
+                  OR the results
+                       |
+                       v
+                 out_is_match = 1
+                 (when out_valid)</code></pre>
+                        </div>
+                        <p class="text-on-surface-variant">
+                            It turns out that the 4 character window ending at “C” matches so the result is a positive match.
+                        </p>
+                        <h4 id="outputting-to-reaction-storage" class="scroll-mt-32 text-lg font-bold text-white">Outputting to Reaction Storage</h4>
+                        <p class="text-on-surface-variant">
+                            The <code>fdk_fast_string_contains</code> algorithm is combinationally expensive, so we have to register their outputs to meet timing. Each algorithm instance writes whether it matches or not to a <code>condition_matches_ff[i]</code> register.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            In the next cycle, if a <code>condition_matches_ff[i]</code> register was set to high, the condition evaluator issues a load to the Reaction Storage for that condition’s associated reaction ID.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            If multiple <code>condition_matches_ff[i]</code> registers are set to high, only the lowest indexed one is eligible to fire. Furthermore, once a condition fires, no conditions are allowed to fire anymore until we reach EOP and the next stimulus payload starts.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            In all, Condition Evaluator processing takes two cycles.
+                        </p>
+                        <h3 id="stage-3-reaction-storage" class="scroll-mt-32 text-2xl font-bold text-white">Stage 3: Reaction Storage</h3>
+                        <p class="text-on-surface-variant">
+                            Reaction Storage stores its reactions in a contiguous region of BRAM. Each reaction occupies a fixed-size slot of 32 eight-byte beats, giving us 256 beats of storage across eight reactions.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            The BRAM is organized as a one-dimensional array of fixed-width beats. We calculate the starting address of each reaction as <code>reaction_id</code> * <code>BEATS_PER_REACTION</code> and stream successive beats until reaching the reaction's configured length.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            Our RAM declaration is
+                        </p>
+                        <div class="bg-slate-900 rounded-lg p-6 overflow-x-auto border border-outline-variant/10" tabindex="0">
+<pre><code class="language-none">(* ram_style = "block" *) logic [BEAT_WIDTH-1:0] data [0:RAM_DEPTH-1];</code></pre>
+                        </div>
+                        <p class="text-on-surface-variant">
+                            where <code>RAM_DEPTH</code> is computed as 8 reactions * 32 beats per reaction = 256 beats.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            To load a reaction, the caller provides the <code>reaction_id</code> and we go straight to data[<code>reaction_id</code> * <code>BEATS_PER_REACTION</code>] and start streaming out the beats up to the preconfigured length of the reaction.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            When the condition evaluator provides the address of the reaction to output, the reaction storage directly streams the first beat’s BRAM memory to the output register in 1 cycle. Each subsequent beat is available by the subsequent cycle, so we never have gaps except when the downstream consumer backpressures.
+                        </p>
+                        <h3 id="additional-latency-reductions" class="scroll-mt-32 text-2xl font-bold text-white">Additional Latency Reductions</h3>
+                        <p class="text-on-surface-variant">
+                            Here is our overall latency breakdown:
+                        </p>
+                        <div class="overflow-x-auto" role="region" aria-label="Trigger processing latency by pipeline stage" tabindex="0">
+                            <table class="w-full text-left text-on-surface-variant">
+                                <caption class="sr-only">Trigger processing latency by pipeline stage</caption>
+                                <tbody>
+                                    <tr class="border-b border-outline-variant/20">
+                                        <th scope="row" class="py-3 pr-6 font-bold text-white">Stimulus Handler</th>
+                                        <td class="py-3">1 cycle</td>
+                                    </tr>
+                                    <tr class="border-b border-outline-variant/20">
+                                        <th scope="row" class="py-3 pr-6 font-bold text-white">Condition Evaluator</th>
+                                        <td class="py-3">2 cycles</td>
+                                    </tr>
+                                    <tr class="border-b border-outline-variant/20">
+                                        <th scope="row" class="py-3 pr-6 font-bold text-white">Reaction Storage</th>
+                                        <td class="py-3">1 cycle</td>
+                                    </tr>
+                                    <tr class="border-b border-outline-variant/20">
+                                        <th scope="row" class="py-3 pr-6 font-bold text-white"><strong class="text-white">Total</strong></th>
+                                        <td class="py-3"><strong class="text-white">4 cycles</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-on-surface-variant">
+                            There are also potential optimizations to further reduce the MVP’s 4 cycle latency.
+                        </p>
+                        <h4 id="pre-sending-the-constant-preamble" class="scroll-mt-32 text-lg font-bold text-white">Pre-sending the Constant Preamble</h4>
+                        <p class="text-on-surface-variant">
+                            Since the first eight bytes of every reaction consist of the same preamble and start-frame delimiter, we could transmit this constant first beat as soon as a reaction is triggered, while the reaction table fetches the subsequent data. This would reduce the latency from four cycles to three cycles.
+                        </p>
+                        <h4 id="advanced-optimizations" class="scroll-mt-32 text-lg font-bold text-white">Advanced Optimizations</h4>
+                        <p class="text-on-surface-variant">
+                            Further advanced optimizations could reduce the fastpath latency to 1 or 2 cycles, at the cost of additional complexity. These optimizations are nuanced and better deferred for an in-person discussion.
+                        </p>
+                        <h3 id="measuring-the-latency" class="scroll-mt-32 text-2xl font-bold text-white">Measuring the Latency</h3>
+                        <p class="text-on-surface-variant">
+                            We confirm the latency in cocotb using a <code>test_stimulus_to_first_response_latency</code> test case that asserts the latency is 4 cycles. This latency measurement assumes the downstream output interface is ready to accept the reaction immediately and excludes transport delays.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            In a production system, we could also add a Trigger Metadata channel for independently measuring FPGA processing latency.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            For each stimulus, the FPGA would emit a StimulusMetadata message containing its <code>request_id</code> and the cycle counter recorded when the Stimulus Handler forwards the first payload beat. Similarly, a ReactionMetadata message would contain the <code>request_id</code> and the cycle counter recorded when Reaction Storage emits the first reaction beat.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            The host could correlate these timestamps by <code>request_id</code> and account for the position of the input beat that completed the trigger condition. For a continuous input stream, this is simply an offset based on the number of beats processed. For inputs containing gaps between beats, the host would need to account for the actual arrival timing.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            This would provide an independent way to measure FPGA processing latency outside cocotb.
+                        </p>
+                        <h3 id="throughput" class="scroll-mt-32 text-2xl font-bold text-white">Throughput</h3>
+                        <p class="text-on-surface-variant">
+                            We’ve discussed latency in great depth, so it’s now a good time to cover throughput.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            Both the Stimulus Handler and Condition Evaluator are capable of processing one input beat per clock cycle. Consequently, neither component introduces an additional throughput bottleneck relative to our UART transport.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            The reaction storage also sends an entire beat per cycle without any delays. On the transmit side of the triggering processing, we are also fully bound to the transport’s throughput.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            One notable behavior though is our choice to drop reaction outputs if something is already serializing. This is chosen for simplicity so that we do not have to manage buffering in output queues.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            This is also a practical choice. We have the restriction that a single stimulus can only trigger a single reaction. Given the Whisper speech-to-text model needs several seconds to convert an entire audio dialogue before a stimulus can be generated, it is highly unlikely two stimuli could arrive close to each other. So the scenario of multiple stimuli causing triggers to fire multiple reactions is extremely unlikely.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            In the future, if handling multiple reaction outputs became important, it would be straightforward to add a buffer; however, if this buffer gets exhausted, we would still end up with drops.
+                        </p>
+                    </div>
+                </section>
+
+                <section id="building-reusable-fpga-ips" class="scroll-mt-32">
+                    <div class="flex items-center gap-4 mb-8">
+                        <h2 class="font-headline-lg text-headline-lg text-white">Building Reusable FPGA IPs</h2>
+                        <div class="h-px flex-grow bg-outline-variant/30"></div>
+                    </div>
+                    <div class="p-6 md:p-8 glass-card rounded-xl space-y-6">
+                        <p class="text-on-surface-variant">
+                            Beyond optimizing latency and throughput, I also designed many of the building blocks as reusable library IPs. These include various types of arbiters and FIFOs, a streaming array-based table, and the UART, channel, and message protocol components discussed in the "Engineering from Zero" section.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            These components are parameterized to support different data widths, beat sizes, and buffer depths. Rather than coupling them to the food kiosk application, I designed them with generic streaming interfaces so they could be composed into other FPGA projects.
+                        </p>
+                        <p class="text-on-surface-variant">
+                            Each component also comes with independent cocotb tests covering multiple parameter configurations. This allows me to validate the reusable infrastructure separately from the application logic and build future projects on an established, tested foundation.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Navigation Footer -->
+                <div class="pt-8 border-t border-outline-variant/20 flex justify-start">
+                    <a href="ai-kiosk.html" class="inline-flex items-center gap-2 text-electric-blue hover:text-emerald-accent transition-colors font-mono-label">
+                        <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+                        Back to AI Food Kiosk Project
+                    </a>
+                </div>
+            </article>
+        </div>
+    </div>
+</main>
+
+
+    <!-- Footer -->
+    <footer class="w-full py-12 bg-surface-container-lowest border-t border-outline-variant/10">
+        <div class="max-w-[1140px] mx-auto px-6 md:px-gutter flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="font-mono-code text-mono-code text-primary">
+                MY RESUME
+            </div>
+            <div class="font-mono-label text-mono-label text-on-surface-variant flex gap-8">
+                <a class="hover:text-secondary transition-colors" href="https://github.com/portfolio4">GitHub</a>
+            </div>
+            <div class="font-mono-label text-mono-label text-on-surface-variant text-center md:text-right">
+                © 2026
+            </div>
+        </div>
+        <p class="max-w-[1140px] mx-auto px-6 md:px-gutter mt-6 text-sm text-on-surface-variant text-center">
+            This site is hosted on GitHub Pages. The site’s own code uses no analytics, tracking cookies, or browser storage.
+            I make no guarantees about GitHub’s use of analytics, tracking, cookies, browser storage, or other data collection.
+            See <a class="underline hover:text-secondary transition-colors" href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages">GitHub Pages documentation</a>
+            and <a class="underline hover:text-secondary transition-colors" href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub’s privacy statement</a>.
+        </p>
+    </footer>
+
+    <!-- Interactive Atmospheric Elements -->
+    <script>
+        // Simple scroll reveal for cards
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.style.opacity = "0";
+            card.style.transform = "translateY(20px)";
+            card.style.transition = "all 0.6s cubic-bezier(0.22, 1, 0.36, 1)";
+            observer.observe(card);
+        });
+
+        // Mouse tracking for glow effect
+        document.querySelectorAll('.mouse-tracking-glow').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
+</body>
+</html>
