@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>MY RESUME</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    
+    <!-- Prism Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#dae2fd",
+                        "surface-tint": "#adc6ff",
+                        "emerald-accent": "#10b981",
+                        "on-tertiary-fixed": "#311400",
+                        "surface-bright": "#31394d",
+                        "on-primary-fixed": "#001a42",
+                        "on-secondary-fixed": "#002113",
+                        "on-tertiary-container": "#461f00",
+                        "pure-white": "#ffffff",
+                        "electric-blue": "#3b82f6",
+                        "on-surface": "#dae2fd",
+                        "on-primary-container": "#00285d",
+                        "secondary": "#4edea3",
+                        "inverse-on-surface": "#283044",
+                        "surface": "#0b1326",
+                        "on-primary": "#002e6a",
+                        "on-secondary-container": "#00311f",
+                        "outline": "#8c909f",
+                        "on-error-container": "#ffdad6",
+                        "outline-variant": "#424754",
+                        "error": "#ffb4ab",
+                        "primary": "#adc6ff",
+                        "surface-variant": "#2d3449",
+                        "surface-container-lowest": "#060e20",
+                        "secondary-container": "#00a572",
+                        "surface-container-highest": "#2d3449",
+                        "surface-container-high": "#222a3d",
+                        "on-primary-fixed-variant": "#004395",
+                        "on-secondary": "#003824",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed-variant": "#723600",
+                        "error-container": "#93000a",
+                        "surface-dim": "#0b1326",
+                        "on-surface-variant": "#c2c6d6",
+                        "tertiary": "#ffb786",
+                        "tertiary-fixed": "#ffdcc6",
+                        "slate-800": "#1e293b",
+                        "slate-700": "#334155",
+                        "primary-fixed": "#d8e2ff",
+                        "on-tertiary": "#502400",
+                        "surface-container": "#171f33",
+                        "inverse-surface": "#dae2fd",
+                        "background": "#0b1326",
+                        "slate-900": "#0f172a",
+                        "silver-text": "#cbd5e1",
+                        "tertiary-container": "#df7412",
+                        "secondary-fixed-dim": "#4edea3",
+                        "primary-container": "#4d8eff",
+                        "surface-container-low": "#131b2e",
+                        "primary-fixed-dim": "#adc6ff",
+                        "inverse-primary": "#005ac2",
+                        "on-secondary-fixed-variant": "#005236",
+                        "tertiary-fixed-dim": "#ffb786",
+                        "secondary-fixed": "#6ffbbe"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1140px",
+                        "section-gap": "80px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "mono-label": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "mono-code": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "base": "1rem",
+                        "display-lg": ["2.5rem", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "mono-label": ["1rem", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "body-md": ["1rem", {"lineHeight": "26px", "fontWeight": "400"}],
+                        "headline-lg": ["1.75rem", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["1.75rem", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "mono-code": ["1rem", {"lineHeight": "18px", "fontWeight": "400"}]
+                    },
+                    "keyframes": {
+                        "typewriter": {
+                            "from": { "width": "0" },
+                            "to": { "width": "100%" }
+                        },
+                        "blink": {
+                            "0%, 100%": { "border-color": "transparent" },
+                            "50%": { "border-color": "currentColor" }
+                        }
+                    },
+                    "animation": {
+                        "typewriter": "typewriter 2s steps(40) forwards",
+                        "caret": "blink 1s step-end infinite",
+                        "caret-once": "blink 1s step-end 2 forwards",
+                        "hero-load": "hero-load 10s ease-out forwards"
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body { background-color: #0b1326; color: #dae2fd; }
+        .article-intro {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-size: 1.0625rem;
+            font-weight: 400;
+            line-height: 1.8;
+            letter-spacing: normal;
+            max-width: 65ch;
+        }
+        #skill-content code {
+            font-family: "JetBrains Mono", ui-monospace, monospace;
+            font-size: 0.9375em;
+            background: rgba(173, 198, 255, 0.08);
+            padding: 0.1em 0.3em;
+            border-radius: 0.25rem;
+            overflow-wrap: anywhere;
+        }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .timeline-gradient { background: linear-gradient(180deg, #3b82f6 0%, transparent 100%); }
+        .glass-card { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .mouse-tracking-glow { position: relative; overflow: hidden; }
+        .mouse-tracking-glow::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(
+                300px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(173, 198, 255, 0.15) 0%,
+                transparent 70%
+            );
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .mouse-tracking-glow:hover::before { opacity: 1; }
+        .mouse-tracking-glow > * { position: relative; z-index: 1; }
+        .typewriter-line { display: inline-block; overflow: hidden; white-space: nowrap; border-right: 4px solid transparent; width: 0; }
+        @keyframes hero-load {
+            0% { opacity: 0; transform: scale(1.25); }
+            100% { opacity: 1.0; transform: scale(1); }
+        }
+        .hero-bg-animate {
+            animation: hero-load 5s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md overflow-x-hidden selection:bg-electric-blue selection:text-white">
+    <!-- TopNavBar -->
+    <header class="fixed top-0 w-full z-50 bg-surface/30 backdrop-blur-md border-b border-outline-variant/10">
+        <nav class="flex justify-between items-center px-6 md:px-gutter max-w-[1140px] mx-auto h-20">
+            <div class="font-display-lg text-headline-lg font-black text-primary dark:text-primary tracking-tighter">
+                <a href="index.html" class="flex items-center gap-2">
+                    
+                    MY RESUME
+                    
+                </a>
+            </div>
+            <div class="hidden md:flex items-center gap-8 font-mono-label text-mono-label">
+                
+            </div>
+        </nav>
+    </header>
+
+    
+<main class="pb-20">
+<!-- Hero / Header Section -->
+<section class="relative min-h-[70vh] flex flex-col justify-center mb-4 overflow-hidden">
+    <!-- Background Image with Animation -->
+    <div class="absolute inset-0 z-0">
+        <img src="assets/hero.png" alt="" class="w-full h-full object-cover hero-bg-animate" />
+        <div class="absolute inset-0 bg-surface/50"></div>
+    </div>
+
+    <div class="relative z-10 max-w-[1140px] mx-auto px-6 md:px-gutter w-full flex flex-col items-center md:items-start text-center md:text-left">
+<p class="text-silver-text text-xl sm:text-3xl md:text-5xl font-mono-code leading-relaxed">
+    <span class="typewriter-line animate-typewriter animate-caret-once pb-1">Elite Low-Latency</span><br>
+    <span class="typewriter-line animate-typewriter animate-caret [animation-delay:2.0s] [animation-fill-mode:forwards]">Systems Engineering</span>
+</p>
+</div>
+</section>
+<!-- About / Timeline Section -->
+<section class="max-w-[1140px] mx-auto px-6 md:px-gutter mb-section-gap" id="about">
+<div class="flex items-center gap-4 mb-12">
+<h2 class="font-headline-lg text-headline-lg text-white">About</h2>
+<div class="h-px flex-grow bg-outline-variant/30"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-12">
+<div class="md:col-span-4 relative">
+<div class="sticky top-28">
+<div class="mouse-tracking-glow p-8 glass-card rounded-xl border-l-4 border-l-electric-blue">
+
+<span class="font-mono-code text-xl leading-relaxed text-electric-blue block mb-2 uppercase tracking-widest text-center">What I Bring<br>To the Team</span>
+
+</div>
+</div>
+</div>
+<div class="md:col-span-8 relative">
+<!-- Vertical Timeline Line -->
+<div class="absolute left-0 top-0 bottom-0 w-0.5 bg-slate-800 ml-[11px]"></div>
+
+<!-- Milestone 1 -->
+<div class="relative pl-12 group">
+<div class="absolute left-0 top-10 w-6 h-6 bg-surface border-4 border-electric-blue rounded-full z-10"></div>
+<div class="mouse-tracking-glow p-8 glass-card rounded-xl">
+<h3 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-white mb-4">10 Years Professional/HFT Experience</h3>
+
+
+<p class="text-on-surface-variant">
+    I have over 10 years of experience working from the highest-level abstractions
+    down to low-level details in software, hardware, and networks.
+    I've worked across high-throughput data ingestion,
+    low-latency data-center-aware networking,
+    reliable order submission,
+    high-fidelity model backtesting,
+    and strategy implementation.
+</p>
+
+</div>
+</div>
+
+
+<div class="relative pl-12 group mt-12">
+<div class="absolute left-0 top-10 w-6 h-6 bg-surface border-4 border-electric-blue rounded-full z-10"></div>
+<div class="mouse-tracking-glow p-8 glass-card rounded-xl">
+
+<h3 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-white mb-4">Lifelong Programmer</h3>
+
+<p class="text-on-surface-variant">
+    If you include my time programming as a hobby, I've been writing code for 20+ years.
+    I'm usually tinkering and learning something new.
+    I've built many fun projects from a young age: computer games,
+    animatronic hand, physics engine, 3D graphing calculator, online whiteboard,
+    stock exchange, plagiarism detector, and more.
+</p>
+
+</div>
+</div>
+
+<div class="relative pl-12 group mt-12">
+<div class="absolute left-0 top-10 w-6 h-6 bg-surface border-4 border-electric-blue rounded-full z-10"></div>
+<div class="mouse-tracking-glow p-8 glass-card rounded-xl">
+
+<h3 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-white mb-4">Software Engineering Judgement</h3>
+
+<p class="text-on-surface-variant">
+    I favor explicit requirements, thoughtful system design, testable components,
+    and deliberate tradeoffs between robustness, complexity, and time-to-market.
+    I've applied these principles across the full software lifecycle, from initial
+    architecture through production support.
+</p>
+</div>
+</div>
+
+<div class="relative pl-12 group mt-12">
+<div class="absolute left-0 top-10 w-6 h-6 bg-surface border-4 border-electric-blue rounded-full z-10"></div>
+<div class="mouse-tracking-glow p-8 glass-card rounded-xl">
+
+<h3 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-white mb-4">Leadership &amp; Mentorship</h3>
+
+<p class="text-on-surface-variant">
+    I've mentored junior engineers, mediated technical disagreements, and worked
+    to build collaborative teams aligned with the organization’s values and ways of working.
+</p>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</section>
+<!-- Skills Section -->
+<section class="max-w-[1140px] mx-auto px-6 md:px-gutter mb-section-gap" id="skills">
+<div class="flex items-center gap-4 mb-12">
+<h2 class="font-headline-lg text-headline-lg text-white">Skills</h2>
+<div class="h-px flex-grow bg-outline-variant/30"></div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+<div class="mouse-tracking-glow p-6 glass-card rounded-lg group hover:bg-slate-800 transition-all cursor-pointer text-center" onclick="toggleSkill('cpp')">
+<div class="w-12 h-12 bg-electric-blue/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-electric-blue" data-icon="code">code</span>
+</div>
+<span class="font-mono-label text-mono-label text-white uppercase tracking-wider">C++</span>
+</div>
+
+<div class="mouse-tracking-glow p-6 glass-card rounded-lg group hover:bg-slate-800 transition-all cursor-pointer text-center" onclick="toggleSkill('python')">
+<div class="w-12 h-12 bg-electric-blue/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-electric-blue" data-icon="code">code</span>
+</div>
+<span class="font-mono-label text-mono-label text-white uppercase tracking-wider">Python</span>
+</div>
+
+<div class="mouse-tracking-glow p-6 glass-card rounded-lg group hover:bg-slate-800 transition-all cursor-pointer text-center" onclick="toggleSkill('linux')">
+<div class="w-12 h-12 bg-electric-blue/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-electric-blue" data-icon="terminal">terminal</span>
+</div>
+<span class="font-mono-label text-mono-label text-white uppercase tracking-wider">Linux</span>
+</div>
+
+
+<div class="mouse-tracking-glow p-6 glass-card rounded-lg group hover:bg-slate-800 transition-all cursor-pointer text-center" onclick="toggleSkill('ai')">
+<div class="w-12 h-12 bg-electric-blue/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-electric-blue" data-icon="psychology">psychology</span>
+</div>
+<span class="font-mono-label text-mono-label text-white uppercase tracking-wider">AI</span>
+</div>
+
+<button type="button" class="mouse-tracking-glow p-6 glass-card rounded-lg group hover:bg-slate-800 transition-all cursor-pointer text-center flex flex-col items-center justify-center" onclick="toggleSkill('networking')" aria-controls="skill-details">
+<span class="w-12 h-12 bg-electric-blue/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-electric-blue" aria-hidden="true">hub</span>
+</span>
+<span class="font-mono-label text-mono-label text-white uppercase tracking-wider">Data Center Networking</span>
+</button>
+
+<button type="button" class="mouse-tracking-glow p-6 glass-card rounded-lg group hover:bg-slate-800 transition-all cursor-pointer text-center flex flex-col items-center justify-center" onclick="toggleSkill('architecture')" aria-controls="skill-details">
+<span class="w-12 h-12 bg-electric-blue/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-electric-blue" aria-hidden="true">memory</span>
+</span>
+<span class="font-mono-label text-mono-label text-white uppercase tracking-wider">OS &amp; Computer Architecture</span>
+</button>
+
+</div>
+
+<!-- Expandable Skill Details -->
+<div id="skill-details" class="mt-8 hidden">
+    <div class="p-8 glass-card rounded-xl border-l-4 border-l-emerald-accent relative">
+        <button onclick="closeSkill()" class="absolute top-4 right-4 text-on-surface-variant hover:text-white transition-colors">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+        <div id="skill-content" class="text-on-surface">
+            <!-- Dynamic Content -->
+        </div>
+    </div>
+</div>
+
+<script>
+    const skillData = {
+        cpp: `
+            <p class="text-on-surface-variant mb-4">Extensive experience with modern C++ for low-latency and systems software.</p>
+
+            <p class="text-on-surface-variant mb-4">
+                Things I use frequently:
+            </p>
+
+            <ul class="list-disc list-inside text-on-surface-variant mb-4">
+                <li>Strong typing</li>
+                <li>Value semantics and RAII</li>
+                <li><code>std::visit</code> and <code>std::variant</code>, often for state management</li>
+                <li><code>std::expected</code></li>
+                <li><code>std::string_view</code> and <code>std::span</code></li>
+                <li>Concepts and ranges where appropriate</li>
+            </ul>
+
+            <p class="text-on-surface-variant mb-4">
+            I favor value semantics and RAII to keep ownership and object lifetimes
+            straightforward. Most dynamic allocation in my code is managed by
+            standard-library containers.
+            </p>
+
+            <p class="text-on-surface-variant">
+            I’m comfortable with concepts, ranges, and template metaprogramming,
+            and use them when they make interfaces clearer or express useful
+            shared behavior.
+            </p>
+        `,
+        python: `
+            <p class="text-on-surface-variant mb-4">
+            I use Python for end-to-end testing, operational tooling, web services,
+            and rapid prototyping.
+            </p>
+
+            <p class="text-on-surface-variant mb-4">
+            Popular libraries I've worked with:
+            </p>
+
+            <ul class="list-disc list-inside text-on-surface-variant">
+                <li>Behave Framework (Testing)</li>
+                <li>pybind11 C++ bindings</li>
+                <li>FastAPI</li>
+                <li>Flask</li>
+            </ul>
+        `,
+        linux: `
+            <p class="text-on-surface-variant mb-4">
+            Linux is my primary development environment. I’m comfortable working
+            from the terminal with <code>tmux</code>, <code>vim</code>, and <code>git</code>,
+            and with similar workflows on macOS.
+            </p>
+
+            <p class="text-on-surface-variant mb-4">
+            Examples of tools I use:
+            </p>
+
+            <ul class="list-disc list-inside text-on-surface-variant mb-4">
+                <li>Networking: <code>tshark</code>, <code>tcpdump</code>, <code>ping</code>, <code>arping</code>, and <code>traceroute</code></li>
+                <li>Debugging and inspection: <code>gdb</code>, <code>objdump</code>, <code>valgrind</code>, <code>ldd</code>, and <code>pdb</code></li>
+            </ul>
+
+            <p class="text-on-surface-variant">
+            I prefer working in the terminal over using an IDE. I like to run the
+            commands myself so I understand how the code is built and what each
+            step does.
+            </p>
+        `,
+        ai: `
+            <p class="text-on-surface-variant">
+            I use AI as an engineering productivity tool for focused implementation,
+            code review, research, and debugging. Generated changes receive the same
+            review and testing as manually written code, while architecture and
+            correctness decisions remain under my control.
+            </p>
+        `,
+        networking: `
+            <p class="text-on-surface-variant mb-4">
+            I have a strong understanding of Ethernet, IP, and TCP, including how
+            data is represented on the wire and how traffic moves through switches,
+            routers, and endpoints. I can reason about the path individual packets
+            take and where latency is introduced.
+            </p>
+
+            <p class="text-on-surface-variant">
+            I understand how specialized protocol implementations and streamlined
+            hardware and software data paths can reduce latency in controlled
+            environments. I’m also familiar with network hardware such as switches,
+            taps, and multiplexers.
+            </p>
+        `,
+        architecture: `
+            <p class="text-on-surface-variant">
+            I have a working foundation in operating systems and computer architecture.
+            I understand concepts such as virtual memory, CPU caches and coherence,
+            PCIe, DMA, and how digital logic in hardware bridges up to operating systems
+            and software. My practical low-latency work has more often focused on
+            networking and deterministic hardware data paths than on CPU
+            microarchitecture tuning.
+            </p>
+
+        `
+    };
+
+    let activeSkill = null;
+
+    function toggleSkill(skillId) {
+        const detailsContainer = document.getElementById('skill-details');
+        const contentArea = document.getElementById('skill-content');
+
+        if (activeSkill === skillId) {
+            closeSkill();
+            return;
+        }
+
+        contentArea.innerHTML = skillData[skillId];
+        detailsContainer.classList.remove('hidden');
+        activeSkill = skillId;
+        
+        // Smooth scroll to the details
+        detailsContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function closeSkill() {
+        document.getElementById('skill-details').classList.add('hidden');
+        activeSkill = null;
+    }
+
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && activeSkill !== null) {
+            closeSkill();
+        }
+    });
+</script>
+</section>
+<!-- Projects Section -->
+<section class="max-w-[1140px] mx-auto px-6 md:px-gutter mb-section-gap" id="projects">
+<div class="flex items-center gap-4 mb-12">
+<h2 class="font-headline-lg text-headline-lg text-white">Projects</h2>
+<div class="h-px flex-grow bg-outline-variant/30"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+<div class="mouse-tracking-glow relative group overflow-hidden rounded-xl bg-slate-800 border border-outline-variant/10 hover:border-electric-blue/60 transition-all duration-300" style="transition-delay: 0.2s">
+    <div class="aspect-video w-full overflow-hidden">
+        <img alt="GPU Store" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-60" src="assets/gpu-store.png"/>
+        <a href="gpu-store.html" class="after:absolute after:inset-0"></a>
+    </div>
+
+    <div class="p-8 flex flex-col h-full relative z-10">
+    <div class="flex justify-between items-start mb-4">
+        <h3 class="font-headline-lg text-headline-lg text-white">GPU Store</h3>
+        <span class="font-mono-code text-mono-code text-electric-blue bg-electric-blue/10 px-3 py-1 rounded">C++</span>
+    </div>
+    <p class="text-silver-text mb-8 flex-grow">
+        A real-time marketplace designed to facilitate the buying
+        and selling of GPU compute time.
+    </p>
+    <a href="gpu-store.html" class="after:absolute after:inset-0"></a>
+</div>
+</div>
+
+<div class="mouse-tracking-glow relative group overflow-hidden rounded-xl bg-slate-800 border border-outline-variant/10 hover:border-electric-blue/60 transition-all duration-300" style="transition-delay: 0.2s">
+    <div class="aspect-video w-full overflow-hidden">
+        <img alt="AI Food Kiosk" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-60" src="assets/ai-kiosk.png"/>
+        <a href="ai-kiosk.html" class="after:absolute after:inset-0"></a>
+    </div>
+
+    <div class="p-8 flex flex-col h-full relative z-10">
+    <div class="flex justify-between items-start mb-4">
+        <h3 class="font-headline-lg text-headline-lg text-white">AI Food Kiosk</h3>
+        <div class="flex gap-2">
+            <span class="font-mono-code text-mono-code text-electric-blue bg-electric-blue/10 px-3 py-1 rounded">C++</span>
+            <span class="font-mono-code text-mono-code text-electric-blue bg-electric-blue/10 px-3 py-1 rounded">SystemVerilog</span>
+        </div>
+    </div>
+    <p class="text-silver-text mb-8 flex-grow">
+        A voice-ordering kiosk with a Basys3 FPGA that can match transcribed requests against preconfigured patterns and emits actions faster than the general LLM agent.
+    </p>
+    <a href="ai-kiosk.html" class="after:absolute after:inset-0"></a>
+</div>
+</div>
+
+</div>
+
+</section>
+</main>
+
+
+    <!-- Footer -->
+    <footer class="w-full py-12 bg-surface-container-lowest border-t border-outline-variant/10">
+        <div class="max-w-[1140px] mx-auto px-6 md:px-gutter flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="font-mono-code text-mono-code text-primary">
+                MY RESUME
+            </div>
+            <div class="font-mono-label text-mono-label text-on-surface-variant flex gap-8">
+                <a class="hover:text-secondary transition-colors" href="https://github.com/portfolio4">GitHub</a>
+            </div>
+            <div class="font-mono-label text-mono-label text-on-surface-variant text-center md:text-right">
+                © 2026
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Atmospheric Elements -->
+    <script>
+        // Simple scroll reveal for cards
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.style.opacity = "0";
+            card.style.transform = "translateY(20px)";
+            card.style.transition = "all 0.6s cubic-bezier(0.22, 1, 0.36, 1)";
+            observer.observe(card);
+        });
+
+        // Mouse tracking for glow effect
+        document.querySelectorAll('.mouse-tracking-glow').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
+</body>
+</html>
